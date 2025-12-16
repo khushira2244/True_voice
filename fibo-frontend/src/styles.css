@@ -1,0 +1,24 @@
+:root {
+  --bg-main: #f5f7fb;
+  --bg-card: #ffffff;
+  --accent: #6c7ae0;
+  --accent-soft: #e0e6ff;
+  --danger: #f87171;
+  --safe: #34d399;
+  --text-main: #111827;
+  --text-soft: #6b7280;
+  --radius-lg: 18px;
+  --shadow-soft: 0 10px 40px rgba(15, 23, 42, 0.08);
+}
+
+
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  align-items: center;
+  
+}
+

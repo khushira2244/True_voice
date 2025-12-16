@@ -1,0 +1,28 @@
+<svg
+  width="180"
+  height="48"
+  viewBox="0 0 120 32"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- icon -->
+  <circle cx="16" cy="16" r="14" fill="#93C5FD"/>
+  <path
+    d="M10 17c2 2 4 3 6 3s4-1 6-3"
+    stroke="#1F2937"
+    stroke-width="2"
+    fill="none"
+    stroke-linecap="round"
+  />
+
+  <!-- text -->
+  <text
+    x="38"
+    y="21"
+    font-family="Inter, Arial, sans-serif"
+    font-size="14"
+    font-weight="600"
+    fill="#d1dcecff"
+  >
+    True Voice
+  </text>
+</svg>

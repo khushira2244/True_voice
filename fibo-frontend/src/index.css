@@ -1,0 +1,19 @@
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+
+  /* ✅ APP BACKGROUND IMAGE */
+  background-image: url("./data/app-bg.png"); /* put image in /public */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
