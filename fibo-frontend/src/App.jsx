@@ -1,33 +1,55 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { api } from "./api.js";
 import { INITIAL_EPISODE_STATE } from "./episodeState.js";
+import { seedFakeEpisodes, EPISODE_KEY } from "./data/fakeEpisode.js";
+
 
 import Landing from "./steps/Landing.jsx";
 import LoginPage from "./steps/Login.jsx";
 import HeroStep from "./steps/HeroStep.jsx";
-
 import "./App.css";
 
-// ✅ use your image maps
+
 import {
   HERO_SCENARIO_,
   HERO_SCENARIO_SYMPTOMS,
   HERO_SCENARIO_SYMPTOM_WITH_SRVERITY,
-} from "./data/heroes"; // adjust path if different
+} from "./data/heroes";
 
 
-import avaSympathyImg from "./data/ava_symphathy.png"; // adjust path
+import avaSympathyImg from "./data/ava_symphathy.png";
 
 const STEP_ORDER = ["landing", "login", "hero", "scenario", "symptoms", "severity", "final"];
 
-function CarouselStep({ items, onPick, onBack }) {
+function CarouselStep({ items, onPick, onBack, debugName = "step" }) {
   const [idx, setIdx] = useState(0);
-  const current = items[idx] || null;
+
+  // ✅ reset index whenever items change (IMPORTANT FIX)
+  useEffect(() => {
+    setIdx(0);
+    console.log(`[${debugName}] items changed -> reset idx=0`, {
+      len: items?.length,
+      items,
+    });
+  }, [items]); // (using items is safest)
+
+  const current = items?.[idx] || null;
+
+  // ✅ log every render state
+  useEffect(() => {
+    console.log(`[${debugName}] render`, {
+      idx,
+      itemsLen: items?.length,
+      current,
+      currentSrc: current?.imageUrl,
+    });
+  }, [debugName, idx, items, current]);
 
   function next() {
     if (!items?.length) return;
     setIdx((i) => (i + 1) % items.length);
   }
+
   function prev() {
     if (!items?.length) return;
     setIdx((i) => (i - 1 + items.length) % items.length);
@@ -35,40 +57,41 @@ function CarouselStep({ items, onPick, onBack }) {
 
   return (
     <div className="step-container hero-step">
-      <button
-        type="button"
-        className="hero-nav hero-nav-left"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          prev();
-        }}
-      >
+      <button type="button" className="hero-nav hero-nav-left" onClick={(e) => { e.preventDefault(); e.stopPropagation(); prev(); }}>
         ◀
       </button>
 
-      <button
-        type="button"
-        className="hero-nav hero-nav-right"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          next();
-        }}
-      >
+      <button type="button" className="hero-nav hero-nav-right" onClick={(e) => { e.preventDefault(); e.stopPropagation(); next(); }}>
         ▶
       </button>
 
       <div className="hero-card">
-        <img
-          src={current?.imageUrl}
-          alt={current?.id || "option"}
-          className="hero-main-image"
-          onClick={() => current && onPick(current)}
-        />
+        {/* ✅ if current is null, show placeholder text (no broken img) */}
+        {current?.imageUrl ? (
+          <img
+            src={current.imageUrl}
+            alt={current.id || "option"}
+            className="hero-main-image"
+            onClick={() => onPick?.(current)}
+            onError={(e) => {
+              console.error(`[${debugName}] IMG ERROR`, {
+                idx,
+                src: e.currentTarget?.src,
+                current,
+                items,
+              });
+            }}
+            onLoad={() => {
+              console.log(`[${debugName}] IMG LOADED`, { idx, src: current.imageUrl });
+            }}
+          />
+        ) : (
+          <div style={{ color: "white", padding: 20, fontWeight: 700 }}>
+            No image available (idx={idx}, len={items?.length})
+          </div>
+        )}
       </div>
 
-      {/* optional back (no CSS change, keep simple) */}
       {onBack ? (
         <div style={{ position: "fixed", left: 16, bottom: 16, zIndex: 9999 }}>
           <button className="btn btn-secondary" onClick={onBack}>
@@ -80,6 +103,7 @@ function CarouselStep({ items, onPick, onBack }) {
   );
 }
 
+
 function App() {
   const [backendOk, setBackendOk] = useState(false);
   const [loadingHealth, setLoadingHealth] = useState(true);
@@ -87,10 +111,10 @@ function App() {
   const [currentStep, setCurrentStep] = useState("landing");
   const [authed, setAuthed] = useState(false);
 
-  // minimal state we need for demo
+   const [finalView, setFinalView] = useState("episodes"); // "episodes" | "analytics"
+
   const [episodeState, setEpisodeState] = useState(INITIAL_EPISODE_STATE);
 
-  // for showing sympathy for a few seconds
   const [showSympathy, setShowSympathy] = useState(false);
   const [pendingSymptomId, setPendingSymptomId] = useState(null);
 
@@ -109,11 +133,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // when symptom is selected, move to severity automatically
+
     if (currentStep === "symptoms" && episodeState?.symptomId && episodeState.symptomId !== "emergency") {
       goTo("severity");
     }
   }, [currentStep, episodeState?.symptomId]);
+
+  useEffect(() => {
+  if (currentStep === "final") setFinalView("episodes");
+}, [currentStep]);
 
 
   function updateEpisode(patch) {
@@ -124,7 +152,7 @@ function App() {
     setCurrentStep(step);
   }
 
-  // ✅ Step message in navbar
+
   const headerText = useMemo(() => {
     switch (currentStep) {
       case "hero":
@@ -149,31 +177,40 @@ function App() {
     }
   }, [currentStep]);
 
-  // ✅ FULL SCREEN LANDING (no navbar)
+
   if (currentStep === "landing") {
     return <Landing ms={4000} onDone={() => goTo("login")} />;
   }
 
-  // ✅ FULL SCREEN LOGIN (no navbar)
+
   if (currentStep === "login") {
     return (
       <LoginPage
         onSuccess={() => {
           setAuthed(true);
+
+       
+          const existing = JSON.parse(localStorage.getItem(EPISODE_KEY) || "[]");
+          if (!existing.length) {
+            const eps = seedFakeEpisodes({ count: 20 });
+            console.log("✅ Demo seeded episodes:", eps);
+          } else {
+            console.log("ℹ️ Episodes already exist, not seeding again.", existing.length);
+          }
+
           goTo("hero");
         }}
       />
+
     );
   }
 
   async function showSympathyThenSaveAndFinish(payload) {
     setShowSympathy(true);
 
-    // show sympathy image for ~2 sec
     setTimeout(() => {
       setShowSympathy(false);
 
-      // ✅ save episode to localStorage (append)
       const key = "truevoice_episodes";
       const prev = JSON.parse(localStorage.getItem(key) || "[]");
       const next = [
@@ -189,10 +226,10 @@ function App() {
     }, 4000);
   }
 
-  // ---- BUILD OPTIONS FROM YOUR MAPS ----
+
   const heroId = episodeState?.heroId;
-  const scenarioId = episodeState?.scenarioId; // outside/home/school
-  const symptomId = episodeState?.symptomId; // head/chest/stomach/leg/throat/emergency
+  const scenarioId = episodeState?.scenarioId;
+  const symptomId = episodeState?.symptomId;
 
   function getScenarioItems() {
     const obj = HERO_SCENARIO_?.[heroId];
@@ -207,12 +244,12 @@ function App() {
   }
   function normalizeSymptomKey(id) {
     if (!id) return id;
-    // convert stomach_pain -> stomach
+
     return id.replace("_pain", "");
   }
 
   function getSeverityItems() {
-    const sId = pendingSymptomId || symptomId;   // ✅ THIS LINE
+    const sId = pendingSymptomId || symptomId;
 
     if (!heroId || !scenarioId || !sId) return [];
 
@@ -228,7 +265,6 @@ function App() {
 
 
 
-  // ---- STEP RENDER ----
   let stepComponent = null;
 
   if (showSympathy) {
@@ -274,7 +310,7 @@ function App() {
       <CarouselStep
         items={items}
         onPick={(picked) => {
-          // ✅ emergency: skip severity + save
+
           if (picked.id === "emergency") {
             const payload = {
               heroId,
@@ -288,13 +324,9 @@ function App() {
             return;
           }
 
-          // normal symptom: go severity
-          setPendingSymptomId(picked.id);          // ✅ immediate value
+          setPendingSymptomId(picked.id);
           updateEpisode({ symptomId: picked.id, severityId: null });
           goTo("severity");
-
-
-
 
         }}
         onBack={() => goTo("scenario")}
@@ -321,59 +353,85 @@ function App() {
         onBack={() => goTo("symptoms")}
       />
     );
-  } else if (currentStep === "final") {
-    const saved = JSON.parse(localStorage.getItem("episodes") || "[]");
+  } 
+ else if (currentStep === "final") {
+  const saved = JSON.parse(localStorage.getItem(EPISODE_KEY) || "[]");
+  const episodes10 = saved.slice(-10).reverse();
 
-    stepComponent = (
-      <div
-        style={{
-          width: "100%",
-          minHeight: "70vh",
-          display: "grid",
-          placeItems: "center",
-          padding: 24,
-        }}
-      >
-        <div
-          style={{
-            width: "min(500px, 90vw)",
-            background: "rgba(173, 216, 230, 0.85)", // light blue
-            borderRadius: 22,
-            padding: 22,
-            boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
-            backdropFilter: "blur(6px)",
-          }}
-        >
-          <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 6 }}>
-            All done 💌
+  // basic analytics (counts)
+  const symptomCount = saved.reduce((acc, e) => {
+    acc[e.symptomId] = (acc[e.symptomId] || 0) + 1;
+    return acc;
+  }, {});
+  const scenarioCount = saved.reduce((acc, e) => {
+    acc[e.scenarioId] = (acc[e.scenarioId] || 0) + 1;
+    return acc;
+  }, {});
+  const emergencyCount = saved.filter(
+    (e) => e.symptomId === "emergency"
+  ).length;
+
+  stepComponent = (
+  <div className="final-page">
+    <div className="final-panel">
+      {/* HEADER */}
+      <div className="final-head">
+        {finalView === "analytics" ? (
+          // ✅ Analytics header row: title left, back button right
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              marginBottom: 10,
+            }}
+          >
+            <div>
+              <div className="final-title">All done 💌</div>
+              <div className="final-subtitle">Analytics</div>
+            </div>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => setFinalView("episodes")}
+            >
+              ← Back to Episodes
+            </button>
           </div>
-
-          <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 14 }}>
-            Saved episodes (latest on top):
+        ) : (
+          // ✅ Episodes header (no button here)
+          <div>
+            <div className="final-title">All done 💌</div>
+            <div className="final-subtitle">Last 10 episodes</div>
           </div>
+        )}
+      </div>
 
-          <div style={{ display: "grid", gap: 12, marginBottom: 18 }}>
-            {saved.slice(0, 5).map((ep, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "rgba(255,255,255,0.75)",
-                  borderRadius: 18,
-                  padding: 14,
-                }}
-              >
-                <div><b>Hero:</b> {ep.heroId}</div>
-                <div><b>Where:</b> {ep.scenarioId}</div>
-                <div><b>Symptom:</b> {ep.symptomId}</div>
-                <div><b>Severity:</b> {ep.severityId}</div>
-                <div style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
-                  {ep.ts}
+      {/* BODY */}
+      {finalView === "episodes" ? (
+        <>
+          <div className="episode-grid">
+            {episodes10.map((ep, idx) => (
+              <div className="episode-card" key={ep.id || idx}>
+                <div>
+                  <b>Hero:</b> {ep.heroId}
+                </div>
+                <div>
+                  <b>Where:</b> {ep.scenarioId}
+                </div>
+                <div>
+                  <b>Symptom:</b> {ep.symptomId}
+                </div>
+                <div>
+                  <b>Severity:</b> {ep.severityId || "-"}
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {/* ACTION BUTTONS */}
+          <div className="final-actions">
             <button
               className="btn btn-secondary"
               onClick={() => {
@@ -387,6 +445,13 @@ function App() {
             </button>
 
             <button
+              className="btn btn-secondary"
+              onClick={() => setFinalView("analytics")}
+            >
+              Show Analytics
+            </button>
+
+            <button
               className="btn btn-primary"
               onClick={() => {
                 setEpisodeState(INITIAL_EPISODE_STATE);
@@ -396,17 +461,102 @@ function App() {
               Start new episode
             </button>
           </div>
+        </>
+      ) : (
+        <div className="analytics-wrap">
+          {/* ✅ ONE KPI BOX */}
+          <div className="analytics-kpiBox">
+            <div className="kpiBlock">
+              <div className="kpiNum">{saved.length}</div>
+              <div className="kpiText">Total episodes</div>
+            </div>
+
+            <div className="kpiDivider" />
+
+            <div className="kpiBlock">
+              <div className="kpiNum">{emergencyCount}</div>
+              <div className="kpiText">Emergency</div>
+            </div>
+          </div>
+
+          {/* ✅ PIE CHART (Symptoms) */}
+          {(() => {
+            const total =
+              Object.values(symptomCount).reduce((a, b) => a + b, 0) || 1;
+
+            const entries = Object.entries(symptomCount)
+              .filter(([k]) => k)
+              .sort((a, b) => b[1] - a[1]);
+
+            let acc = 0;
+            const stops = entries.map(([label, value]) => {
+              const start = acc;
+              acc += (value / total) * 360;
+              return { label, value, start, end: acc };
+            });
+
+            const palette = [
+              "#6a5acd",
+              "#20b2aa",
+              "#ffa500",
+              "#ff6b6b",
+              "#4caf50",
+              "#00bcd4",
+              "#9c27b0",
+              "#795548",
+              "#607d8b",
+            ];
+
+            const pieStyle = {
+              background: `conic-gradient(${stops
+                .map(
+                  (s, i) =>
+                    `${palette[i % palette.length]} ${s.start}deg ${s.end}deg`
+                )
+                .join(", ")})`,
+            };
+
+            return (
+              <div className="analytics-pieSection">
+                <div className="analytics-pieTitle">Symptoms distribution</div>
+
+                {/* legend ABOVE pie */}
+                <div className="legendChips">
+                  {stops.slice(0, 10).map((s, i) => (
+                    <div className="chip" key={s.label}>
+                      <span
+                        className="chipDot"
+                        style={{ background: palette[i % palette.length] }}
+                      />
+                      <span className="chipText">
+                        {s.label}: <b>{s.value}</b>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* pie BELOW */}
+                <div className="pieCenter">
+                  <div className="analytics-pie" style={pieStyle} />
+                </div>
+              </div>
+            );
+          })()}
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  </div>
+);
+
+}
+
 
 
   const showNavbar = authed && currentStep !== "landing" && currentStep !== "login";
 
   return (
     <div className="app-root">
-      {/* ✅ NAVBAR hidden on Login */}
+
       {showNavbar ? (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999 }}>
           <div
@@ -467,7 +617,6 @@ function App() {
         </div>
       ) : null}
 
-      {/* push content below navbar */}
       <div style={{ paddingTop: showNavbar ? 72 : 0 }}>
         <div className={`app-shell ${currentStep === "final" ? "app-shell--flat" : ""
           }`}>{stepComponent}</div>
