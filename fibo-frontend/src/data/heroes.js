@@ -15,6 +15,13 @@ import avaOutsideStomachSevereImg from "../data/ava_ouside_stomach_severe.png";
 import avaOutsideEmergencyImg from "../data/ava_outside_emergency.png";
 
 
+const FIBO_HERO_URLS = {
+  leo_child:
+    "https://v3b.fal.media/files/b/0a8737c6/Wpq_rUZFf-fY8vWE9gbsP_ca99c0a2c7cf430293e611c6ffcf2939.png",
+  ava_child:
+    "https://v3b.fal.media/files/b/0a8737c8/LTCKCSRXvYaz5lDeuoya1_d8414028abf843489248aec31d48e145.png",
+};
+
 export const HEROES = [
   {
     id: "leo_child",
@@ -34,7 +41,7 @@ export const HEROES = [
     description: "An 8-year-old Western girl, bright and calm.",
     basePrompt:
       "A soft, non-vibrant cartoon-style illustration of a 6-year-old girl standing alone in a neutral hero pose, facing forward. The girl wears a simple, child-friendly superhero-inspired outfit with a small emblem and light cape. Simple, minimal background.",
-    imageUrl: avaImg
+    imageUrl: avaImg,
   }
 ];
 

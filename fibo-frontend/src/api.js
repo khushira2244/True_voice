@@ -25,15 +25,34 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // ✅ login is handled in Login.jsx already, so keep only protected calls here
+  // -------------------------
+  // HEALTH CHECK (FREE)
+  // -------------------------
+  ping() {
+    return request("/api/ping", { method: "GET" });
+  },
 
-  generateHero(hero) {
+  // -------------------------
+  // HERO LIST (CALLS FIBO)
+  // generates hero images
+  // -------------------------
+  getHeroes() {
+    return request("/api/hero", { method: "GET" });
+  },
+
+  // -------------------------
+  // HERO SELECTION (NO FIBO)
+  // -------------------------
+  selectHero(heroId) {
     return request("/api/hero", {
       method: "POST",
-      body: JSON.stringify({ hero }),
+      body: JSON.stringify({ hero: heroId }),
     });
   },
 
+  // -------------------------
+  // NEXT STEPS (AS IS)
+  // -------------------------
   generateScenario(hero, scenario) {
     return request("/api/scenario", {
       method: "POST",

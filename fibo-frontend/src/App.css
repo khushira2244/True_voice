@@ -411,6 +411,7 @@ body::before {
   display: grid;
   grid-template-rows: auto auto;
   gap: 16px;
+  margin-bottom: 30px;
 
 }
 
@@ -428,7 +429,7 @@ body::before {
   margin-top: 50px;
   background: rgba(173, 216, 230, 0.88);
   border-radius: 28px;
-  padding: 18px;
+  padding: 13px;
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.14);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -615,3 +616,25 @@ body::before {
   border: 8px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
 }
+
+/* 🔥 ONLY Final → Analytics */
+.app-shell.app-shell--scroll {
+  min-height: calc(100vh - 72px); /* navbar height */
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 80vw
+}
+
+.pieRow {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  align-items: start;
+}
+
+.pieBox {
+  width: 360px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
