@@ -81,7 +81,8 @@ function App() {
           </>
         );
       case "severity":
-        return "Is it more or normal problem?";
+        return "Is it severe or not severe?";
+
       case "final":
         return "All done 💌";
       default:
@@ -183,7 +184,7 @@ function App() {
       <CarouselStep
         items={items}
         onPick={(picked) => {
-          if (picked.id === "emergency") {
+          if (picked.id === "breathing_or_choking") {
             const payload = {
               heroId,
               scenarioId,
@@ -205,25 +206,69 @@ function App() {
     );
   } else if (currentStep === "severity") {
     const items = getSeverityItems({ heroId, scenarioId, symptomId, pendingSymptomId });
+    const img = items?.[0]?.imageUrl; // we show ONLY ONE image (severe preview)
+
+    const sId = pendingSymptomId || symptomId;
+
+    function finishWithSeverity(sev) {
+      const payload = {
+        heroId,
+        scenarioId,
+        symptomId: sId,
+        severityId: sev, // "mild" | "severe"
+        pathImage: `${heroId}_${scenarioId}_${sId}_${sev}`,
+      };
+
+      updateEpisode({ severityId: sev });
+      showSympathyThenSaveAndFinish(payload);
+    }
 
     stepComponent = (
-      <CarouselStep
-        items={items}
-        onPick={() => {
-          const payload = {
-            heroId,
-            scenarioId,
-            symptomId,
-            severityId: "severe",
-            pathImage: `${heroId}_${scenarioId}_${symptomId}_severe`,
-          };
-          updateEpisode({ severityId: "severe" });
-          showSympathyThenSaveAndFinish(payload);
-        }}
-        onBack={() => goTo("symptoms")}
-      />
+      <div className="step-container hero-step">
+        <div className="hero-card">
+          {img ? (
+            <img
+              src={img}
+              alt="severity"
+              className="hero-main-image"
+              draggable={false}
+            />
+          ) : (
+            <div style={{ color: "white", padding: 20, fontWeight: 700 }}>
+              No severity image available
+            </div>
+          )}
+        </div>
+
+        {/* ✅ Two buttons */}
+        <div
+          style={{
+            marginTop: 16,
+            display: "flex",
+            gap: 12,
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <button className="btn btn-secondary" onClick={() => finishWithSeverity("mild")}>
+            Not Severe
+          </button>
+
+          <button className="btn btn-primary" onClick={() => finishWithSeverity("severe")}>
+            Severe
+          </button>
+        </div>
+
+        {/* back */}
+        <div style={{ position: "fixed", left: 16, bottom: 16, zIndex: 9999 }}>
+          <button className="btn btn-secondary" onClick={() => goTo("symptoms")}>
+            Back
+          </button>
+        </div>
+      </div>
     );
-  } else if (currentStep === "final") {
+  }
+  else if (currentStep === "final") {
     stepComponent = (
       <FinalStep
         EPISODE_KEY={EPISODE_KEY}

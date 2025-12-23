@@ -1,14 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  HEROES,
+  HERO_SCENARIO_,
+  HERO_SCENARIO_SYMPTOMS,
+  HERO_SCENARIO_SYMPTOM_WITH_SRVERITY,
+} from "../data/heroes";
 
-const API_BASE = import.meta.env.VITE_API_BASE || ""; 
-// Example: VITE_API_BASE="http://localhost:5000"
+const API_BASE = import.meta.env.VITE_API_BASE || "";
 
+// ---------------- helpers ----------------
+function preloadImages(urls = []) {
+  urls.forEach((url) => {
+    if (!url) return;
+    const img = new Image();
+    img.src = url;
+  });
+}
+
+function preloadInBatches(urls = [], batchSize = 6, delay = 300) {
+  let i = 0;
+  function run() {
+    const batch = urls.slice(i, i + batchSize);
+    preloadImages(batch);
+    i += batchSize;
+    if (i < urls.length) setTimeout(run, delay);
+  }
+  run();
+}
+
+function collectAllOtherImages() {
+  const urls = [];
+
+  // scenarios
+  Object.values(HERO_SCENARIO_).forEach((hero) => {
+    Object.values(hero).forEach((node) => {
+      if (node?.imageUrl) urls.push(node.imageUrl);
+    });
+  });
+
+  // symptoms
+  Object.values(HERO_SCENARIO_SYMPTOMS).forEach((hero) => {
+    Object.values(hero).forEach((scenario) => {
+      Object.values(scenario).forEach((node) => {
+        if (node?.imageUrl) urls.push(node.imageUrl);
+      });
+    });
+  });
+
+  // severity
+  Object.values(HERO_SCENARIO_SYMPTOM_WITH_SRVERITY).forEach((hero) => {
+    Object.values(hero).forEach((scenario) => {
+      Object.values(scenario).forEach((sym) => {
+        if (sym?.severe?.imageUrl) urls.push(sym.severe.imageUrl);
+      });
+    });
+  });
+
+  return urls;
+}
+
+// ---------------- component ----------------
 function LoginPage({ onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+
+  // ✅ PRELOAD HERO IMAGES ON PAGE LOAD (FAST, ONLY 2)
+  useEffect(() => {
+    preloadImages(HEROES.map((h) => h.imageUrl));
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -27,9 +89,11 @@ function LoginPage({ onSuccess }) {
         throw new Error(data?.error || "Login failed");
       }
 
-      // store token for protected routes later
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ PRELOAD ALL OTHER IMAGES AFTER SUCCESS (BATCHED)
+      preloadInBatches(collectAllOtherImages());
 
       onSuccess?.(data);
     } catch (e2) {
@@ -75,10 +139,6 @@ function LoginPage({ onSuccess }) {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
-        <div className="auth-hint">
-          
-        </div>
       </div>
     </div>
   );
