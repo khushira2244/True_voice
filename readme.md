@@ -136,24 +136,59 @@ http://localhost:5000
 (Used mainly for health check & demo auth)
 
 ---
+## How to Run the Project Locally
 
-### 3️⃣ Run Frontend
+### 1️⃣ Clone the Repository
 
-Open a new terminal:
+---
+
+### 2️⃣ Run Backend
 
 ```bash
+cd fibo-backend/fibo-backend
+npm install
+✅ Create .env file (REQUIRED — not included in GitHub for security)
+Create this file here:
+fibo-backend/fibo-backend/.env
+
+Add these variables:
+
+env
+Copy code
+FAL_KEY=YOUR_FAL_KEY_HERE
+OPENAI_API_KEY=YOUR_OPENAI_KEY_HERE
+NODE_ENV=development
+PORT=5000
+Now start backend:
+
+bash
+Copy code
+npm run dev
+Backend runs on:
+
+http://localhost:5000
+(Used mainly for health check, demo auth, and FIBO image generation APIs)
+
+3️⃣ Run Frontend
+Open a new terminal:
+
+bash
+Copy code
 cd fibo-frontend
 npm install
 npm run dev
-```
+✅ (Optional) Frontend .env
+If you want to set the API base URL explicitly, create:
+fibo-frontend/.env
 
+Add:
+
+env
+Copy code
+VITE_API_BASE=http://localhost:5000
 Frontend runs on:
 
-```
 http://localhost:5173
-```
-
----
 
 ## 🔐 Authentication Note
 
@@ -218,4 +253,5 @@ This repository represents a **stable demo build**, ready for review and deploym
 
 TrueVoice is not just a UI —
 it is a **translation layer between emotion and care**.
+
 
