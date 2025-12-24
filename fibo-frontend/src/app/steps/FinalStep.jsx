@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import AttendModal from "../../steps/AttendModal.jsx"
 
 export default function FinalStep({
   EPISODE_KEY,
@@ -10,6 +11,32 @@ export default function FinalStep({
   finalView,
   setFinalView,
 }) {
+  // Optional: if finalView ever becomes undefined, default to episodes
+  const view = finalView || "episodes";
+
+  // ✅ state (modal)
+  const [attendOpen, setAttendOpen] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+
+  // ✅ refresh tick to re-read localStorage after save
+  const [refreshTick, setRefreshTick] = useState(0);
+
+  // ✅ profile (guardian defaults)
+  const PROFILE_KEY = "truevoice_profile";
+  const profile = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
+    } catch {
+      return null;
+    }
+  }, []);
+
+  // ✅ helper to save episodes back
+  function saveEpisodes(next) {
+    localStorage.setItem(EPISODE_KEY, JSON.stringify(next));
+    setRefreshTick((t) => t + 1); // force saved to refresh
+  }
+
   // 1) Read saved episodes safely
   const saved = useMemo(() => {
     try {
@@ -19,7 +46,7 @@ export default function FinalStep({
     } catch {
       return [];
     }
-  }, [EPISODE_KEY]);
+  }, [EPISODE_KEY, refreshTick]);
 
   const episodes10 = useMemo(() => saved.slice(-10).reverse(), [saved]);
 
@@ -66,9 +93,6 @@ export default function FinalStep({
       .sort((a, b) => b.value - a.value);
   }, [symptomCount]);
 
-  // Optional: if finalView ever becomes undefined, default to episodes
-  const view = finalView || "episodes";
-
   return (
     <div className="final-page">
       <div className="final-panel">
@@ -113,24 +137,88 @@ export default function FinalStep({
                   No episodes yet. Start one to see it here.
                 </div>
               ) : (
-                episodes10.map((ep, idx) => (
-                  <div className="episode-card" key={ep.id || idx}>
-                    <div>
-                      <b>Hero:</b> {ep.heroId || "-"}
+                // ✅ replaced map block (dot + color + click)
+                episodes10.map((ep, idx) => {
+                  const attended = ep?.attended === true; // ✅ strict fallback
+
+                  return (
+                    <div
+                      key={ep.id || idx}
+                      className={`episode-card ${
+                        attended
+                          ? "episode-card--attended"
+                          : "episode-card--notAttended"
+                      } ${!attended ? "episode-card--clickable" : ""}`}
+                      onClick={() => {
+                        if (attended) return; // ✅ attended not clickable
+                        setSelectedIdx(idx);
+                        setAttendOpen(true);
+                      }}
+                    >
+                      {/* ✅ status dot only */}
+                      <span
+                        className={`status-dot ${
+                          attended
+                            ? "status-dot--attended"
+                            : "status-dot--notAttended"
+                        }`}
+                      />
+
+                      <div>
+                        <b>Hero:</b> {ep.heroId || "-"}
+                      </div>
+                      <div>
+                        <b>Where:</b> {ep.scenarioId || "-"}
+                      </div>
+                      <div>
+                        <b>Symptom:</b> {ep.symptomId || "-"}
+                      </div>
+                      <div>
+                        <b>Severity:</b> {ep.severityId || "-"}
+                      </div>
                     </div>
-                    <div>
-                      <b>Where:</b> {ep.scenarioId || "-"}
-                    </div>
-                    <div>
-                      <b>Symptom:</b> {ep.symptomId || "-"}
-                    </div>
-                    <div>
-                      <b>Severity:</b> {ep.severityId || "-"}
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
+
+            {/* ✅ modal just below grid */}
+            <AttendModal
+              open={attendOpen}
+              title="Mark as attended"
+              guardianDefault={{
+                name: profile?.guardianName || "",
+                relationship: profile?.relationship || "Mother",
+              }}
+              onClose={() => {
+                setAttendOpen(false);
+                setSelectedIdx(null);
+              }}
+              onSubmit={(payload) => {
+                // payload: { type, name, relationship, attendedAt }
+
+                // IMPORTANT: selectedIdx is index in episodes10 (last 10 reversed)
+                // We must map it back to the real index in `saved`.
+                const realIndex = saved.length - 1 - selectedIdx; // because reversed
+
+                const next = [...saved];
+                const old = next[realIndex] || {};
+
+                next[realIndex] = {
+                  ...old,
+                  attended: true,
+                  attendedBy: payload,
+                };
+
+                saveEpisodes(next);
+
+                setAttendOpen(false);
+                setSelectedIdx(null);
+
+                // keep view on episodes
+                setFinalView("episodes");
+              }}
+            />
 
             {/* ACTION BUTTONS */}
             <div className="final-actions">
@@ -198,8 +286,7 @@ export default function FinalStep({
                         <span
                           className="chipDot"
                           style={{
-                            background:
-                              PIE_COLORS[i % PIE_COLORS.length],
+                            background: PIE_COLORS[i % PIE_COLORS.length],
                           }}
                         />
                         <span className="chipText">

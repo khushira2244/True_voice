@@ -56,7 +56,75 @@ function collectAllOtherImages() {
     });
   });
 
-  return urls;
+  // de-dupe (optional)
+  return Array.from(new Set(urls));
+}
+
+// ---------------- location (silent) ----------------
+function getBrowserLocation({ timeoutMs = 8000 } = {}) {
+  return new Promise((resolve, reject) => {
+    if (!("geolocation" in navigator)) {
+      reject(new Error("Geolocation not supported"));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        resolve({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        });
+      },
+      (err) => reject(err),
+      {
+        enableHighAccuracy: false,
+        timeout: timeoutMs,
+        maximumAge: 60_000,
+      }
+    );
+  });
+}
+
+async function postLocationSilently({ token }) {
+  // don’t re-ask too frequently (optional guard)
+  const last = JSON.parse(localStorage.getItem("tv_location") || "null");
+  if (last?.savedAt) {
+    const ageMs = Date.now() - new Date(last.savedAt).getTime();
+    if (ageMs < 10 * 60 * 1000) return; // 10 minutes
+  }
+
+  try {
+    const loc = await getBrowserLocation({ timeoutMs: 8000 });
+
+    const res = await fetch(`${API_BASE}/api/location`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ lat: loc.lat, lon: loc.lon }),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.ok) {
+      // fail silently
+      return;
+    }
+
+    const payload = {
+      lat: data?.location?.lat ?? loc.lat,
+      lon: data?.location?.lon ?? loc.lon,
+      label: data?.location?.label || "",
+      accuracy: loc.accuracy,
+      savedAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem("tv_location", JSON.stringify(payload));
+  } catch (e) {
+    // user denied / timeout / any error -> ignore silently
+  }
 }
 
 // ---------------- component ----------------
@@ -94,6 +162,10 @@ function LoginPage({ onSuccess }) {
 
       // ✅ PRELOAD ALL OTHER IMAGES AFTER SUCCESS (BATCHED)
       preloadInBatches(collectAllOtherImages());
+
+      // ✅ SILENT LOCATION CAPTURE (DO NOT BLOCK UI)
+      // fire-and-forget
+      postLocationSilently({ token: data.token });
 
       onSuccess?.(data);
     } catch (e2) {

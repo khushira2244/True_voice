@@ -3,6 +3,8 @@ import { config } from "../config/env.js";
 
 // 🔹 Flow config (medical + FIBO snippets)
 import { HERO_SCENARIO_SYMPTOM_PROMPTS } from "../flows/medicalTree.js";
+import { buildSosPrompt } from "../flows/sosFlow.js";
+
 
 // 🔹 Heroes + scenarios
 import { HERO_OPTIONS } from "../flows/heroOptions.js";
@@ -18,15 +20,15 @@ import { HERO_SCENARIO_SYMPTOM_WITH_SRVERITY_PROMPTS } from "../flows/medicalFlo
 import { generateWithFibo } from "../services/fiboService.js";
 
 async function getWeatherSafe() {
-  try {
-    return await getCurrentWeatherText({
-      lat: config.WEATHER_LAT,
-      lon: config.WEATHER_LON,
-    });
-  } catch (e) {
-    console.warn("Weather fetch failed, continuing without it:", e?.message);
-    return "";
-  }
+  // try {
+  //   return await getCurrentWeatherText({
+  //     lat: config.WEATHER_LAT,
+  //     lon: config.WEATHER_LON,
+  //   });
+  // } catch (e) {
+  //   console.warn("Weather fetch failed, continuing without it:", e?.message);
+    return "Weather:rainy";
+  
 }
 
 const router = Router();
@@ -137,7 +139,7 @@ router.post("/scenario", requireAuth, async (req, res) => {
   });
 });
 
-// ✅ PROTECTED
+
 router.post("/symptom", requireAuth, async (req, res) => {
   const { hero, scenario, symptom } = req.body || {};
   if (!hero || !scenario || !symptom) {
@@ -154,7 +156,7 @@ router.post("/symptom", requireAuth, async (req, res) => {
   const weatherText = await getWeatherSafe();
   const prompt = weatherText ? `${symptomConfig.basePrompt} ${weatherText}` : symptomConfig.basePrompt;
 
-  // 🚨 Emergency symptoms skip severity
+  
   const isEmergency =
     symptom === "breathing_or_choking" || symptom === "big_hurt_or_bleeding";
 
@@ -207,6 +209,39 @@ router.post("/symptom", requireAuth, async (req, res) => {
     return res.status(500).json({ error: "Failed to generate image" });
   }
 });
+
+
+// ✅ PROTECTED: SOS image generation (confidence UI image)
+router.post("/sos", requireAuth, async (req, res) => {
+  const { hero, placeLabel } = req.body || {};
+
+  if (!hero) return badRequest(res, "hero is required");
+
+  // placeLabel can be optional (fallback exists in builder)
+  const prompt = buildSosPrompt({ hero, placeLabel });
+
+  try {
+    // keep SAME generation style as your other endpoints
+    const imageUrl = await generateWithFibo(prompt, {
+      aspect_ratio: "4:3",
+      width: 1000,
+      height: 500,
+    });
+
+    return res.json({
+      ok: true,
+      step: "sos",
+      hero,
+      placeLabel: placeLabel || null,
+      prompt,
+      imageUrl,
+    });
+  } catch (err) {
+    console.error("SOS FIBO generation error:", err);
+    return res.status(500).json({ error: "Failed to generate SOS image" });
+  }
+});
+
 
 // ✅ already protected
 router.post("/severity", requireAuth, async (req, res) => {

@@ -3,6 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { api } from "./api.js";
 import { INITIAL_EPISODE_STATE } from "./episodeState.js";
 import { seedFakeEpisodes, EPISODE_KEY } from "./data/fakeEpisode.js";
+import { SOS_IMAGE } from "./data/heroes.js";
+
 
 import Landing from "./steps/Landing.jsx";
 import LoginPage from "./steps/Login.jsx";
@@ -12,10 +14,13 @@ import "./App.css";
 import avaSympathyImg from "./data/ava_symphathy.png";
 
 import { STEP_ORDER } from "./app/constants.js";
+import ProfileStep from "./steps/ProfileStep.jsx";
+
 import CarouselStep from "./app/components/CarouselStep.jsx";
 import { getScenarioItems, getSymptomItems, getSeverityItems } from "./app/episode/episodeSelectors.js";
 import AppNavbar from "./app/layout/AppNavbar.jsx";
 import FinalStep from "./app/steps/FinalStep.jsx";
+const PROFILE_KEY = "truevoice_profile";
 
 function App() {
   const [backendOk, setBackendOk] = useState(false);
@@ -30,6 +35,12 @@ function App() {
 
   const [showSympathy, setShowSympathy] = useState(false);
   const [pendingSymptomId, setPendingSymptomId] = useState(null);
+
+
+  const [profile, setProfile] = useState(() => {
+    return JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
+  });
+
 
   useEffect(() => {
     (async () => {
@@ -68,6 +79,8 @@ function App() {
 
   const headerText = useMemo(() => {
     switch (currentStep) {
+      case "profile":
+        return "Child and Guardian Details";
       case "hero":
         return "You can share your feeling with your HERO";
       case "scenario":
@@ -77,7 +90,7 @@ function App() {
           <>
             What kind of problem are you facing?
             <br />
-            Head | Chest | Stomach | Leg | Throat | Emergency
+            Head | Chest | Stomach | Emergency
           </>
         );
       case "severity":
@@ -108,11 +121,27 @@ function App() {
             console.log("ℹ️ Episodes already exist, not seeding again.", existing.length);
           }
 
+          goTo("profile");
+
+        }}
+      />
+    );
+  }
+
+  if (currentStep === "profile") {
+    return (
+      <ProfileStep
+        initialProfile={profile}
+        onBack={() => goTo("login")}
+        onContinue={(data) => {
+          setProfile(data);
+          localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
           goTo("hero");
         }}
       />
     );
   }
+
 
   async function showSympathyThenSaveAndFinish(payload) {
     setShowSympathy(true);
@@ -127,8 +156,13 @@ function App() {
         {
           ...payload,
           savedAt: new Date().toISOString(),
+
+          // ✅ attendance defaults
+          attended: false,
+          attendedBy: null,
         },
       ];
+
       localStorage.setItem(key, JSON.stringify(next));
 
       goTo("final");
@@ -145,7 +179,12 @@ function App() {
     stepComponent = (
       <div className="step-container hero-step">
         <div className="hero-card">
-          <img src={avaSympathyImg} alt="sympathy" className="hero-main-image" />
+          <img
+            src={episodeState?.symptomId === "emergency" ? SOS_IMAGE : avaSympathyImg}
+            alt="overlay"
+            className="hero-main-image"
+          />
+
         </div>
       </div>
     );
@@ -184,19 +223,50 @@ function App() {
       <CarouselStep
         items={items}
         onPick={(picked) => {
+          // ✅ Emergency flow
           if (picked.id === "breathing_or_choking") {
             const payload = {
               heroId,
               scenarioId,
               symptomId: "emergency",
               severityId: null,
-              pathImage: "ava_outside_emergency",
+              pathImage: "sos_image",
             };
+
+            // mark emergency in episode state
             updateEpisode({ symptomId: "emergency", severityId: null });
-            showSympathyThenSaveAndFinish(payload);
+
+            // ✅ show SOS overlay for 4s (NO API call for hackathon)
+            setShowSympathy(true);
+
+            setTimeout(() => {
+              setShowSympathy(false);
+
+              // ✅ save episode
+              const key = "truevoice_episodes";
+              const prev = JSON.parse(localStorage.getItem(key) || "[]");
+              const next = [
+                ...prev,
+                {
+                  ...payload,
+                  savedAt: new Date().toISOString(),
+
+                  // ✅ attendance defaults
+                  attended: false,
+                  attendedBy: null,
+                },
+              ];
+
+              localStorage.setItem(key, JSON.stringify(next));
+
+              // ✅ go final
+              goTo("final");
+            }, 4000);
+
             return;
           }
 
+          // ✅ Normal symptom → go severity
           setPendingSymptomId(picked.id);
           updateEpisode({ symptomId: picked.id, severityId: null });
           goTo("severity");
@@ -204,6 +274,7 @@ function App() {
         onBack={() => goTo("scenario")}
       />
     );
+
   } else if (currentStep === "severity") {
     const items = getSeverityItems({ heroId, scenarioId, symptomId, pendingSymptomId });
     const img = items?.[0]?.imageUrl; // we show ONLY ONE image (severe preview)

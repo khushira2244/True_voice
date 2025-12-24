@@ -1,18 +1,7 @@
 
 import leoImg from "../data/Leo_child.png";
 import avaImg from "../data/ava.png";
-import avaOutsideImg from "../data/ava_outside.png";
-import avaHomeImg from "../data/ava_home.png";
-import avaSchoolImg from "../data/ava_school.png";
-
-import avaOutsideHeadImg from "../data/ava_outside_head.png";
-import avaOutsideChestImg from "../data/ava_outside_chest.png";
-import avaOutsideStomachImg from "../data/ava_outside_stomach.png";
-import avaOutsideLegImg from "../data/ava_outside_leg.png";
-import avaOutsideThroatImg from "../data/ava_outside_throat.png";
-
-import avaOutsideStomachSevereImg from "../data/ava_ouside_stomach_severe.png";
-import avaOutsideEmergencyImg from "../data/ava_outside_emergency.png";
+import sosImg from "../data/sos_img.png"
 
 
 const FIBO_HERO_URLS = {
@@ -44,8 +33,8 @@ export const HEROES = [
     imageUrl: avaImg,
   }
 ];
-
-// id:ava_child ,scenaro:outside ,imageUrl
+export const SOS_IMAGE = sosImg;
+  
 
 export const HERO_SCENARIO_ = {
   leo_child: {
@@ -66,45 +55,99 @@ export const HERO_SCENARIO_ = {
 export const HERO_SCENARIO_SYMPTOMS = {
   leo_child: {
     outside: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b09/UEG7ZTR-M_V_oxt-c1egN_58884abc5c7645eaa79c214428b5e807.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b15/mR1F9O41cs4oJYEGcJW_p_5f31232be15e4168a17c83233d7e2bc0.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b1e/LbbdtZMdvs1B7DF2lGtyS_0aaebcd67b804d32ba526aaae7a91716.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877b2f/MwA3hOtuQRjjEL50jfhVa_f33bb264285945a994180789c52bf498.png" },
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b09/UEG7ZTR-M_V_oxt-c1egN_58884abc5c7645eaa79c214428b5e807.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b15/mR1F9O41cs4oJYEGcJW_p_5f31232be15e4168a17c83233d7e2bc0.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b1e/LbbdtZMdvs1B7DF2lGtyS_0aaebcd67b804d32ba526aaae7a91716.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b61/R3TMuQplkWVjckj_YgpG2_764800757f6f415395778c3556cd5170.png",
+      },
     },
-    home: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b53/slfe6BC_7K--c9153JKBl_a6937c2d393b4074be6ee40d6ee7f2c6.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b48/ZoRzsVexBaPED7GnEnvWD_7c68e9991bb44e2097d642f02063456e.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b3e/Qv2lBpJgsMscULrK61LCX_cfecb4938ab548d39cb1a4bc658cc75e.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877b36/1JDLRjAPPB5LApuaWqCOY_89ab7f69400440e9a1898850b6addd70.png" },
-    },
+
     school: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b59/6A3nMJOGVx-72aZo9nqMS_61e11aa091c9454f9599778092ddcca0.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b5d/a6b_1ImakzyGh5bYZQOLp_8c82c27e843a44629a916363e1dba255.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b64/4FKiKiZlMop5relZOjd6r_50d8a9ed41eb4038a79ca407c720bcab.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877b6a/sYI0cEyssAQiTUTzqk9l0_905e3f9b06eb45ecbe3dbd684d30be36.png" },
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b59/6A3nMJOGVx-72aZo9nqMS_61e11aa091c9454f9599778092ddcca0.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b5d/a6b_1ImakzyGh5bYZQOLp_8c82c27e843a44629a916363e1dba255.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b64/4FKiKiZlMop5relZOjd6r_50d8a9ed41eb4038a79ca407c720bcab.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b72/BhUKLfts3qFO3rCl_tslz_fab7801106ad44008bf851a8a184be34.png",
+      },
+    },
+
+    home: {
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b53/slfe6BC_7K--c9153JKBl_a6937c2d393b4074be6ee40d6ee7f2c6.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b48/ZoRzsVexBaPED7GnEnvWD_7c68e9991bb44e2097d642f02063456e.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b3e/Qv2lBpJgsMscULrK61LCX_cfecb4938ab548d39cb1a4bc658cc75e.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b77/S8EBgz1vEaSt4_0u7xD_-_b9dd1b74f96340d1b893ee2fcea66460.png",
+      },
     },
   },
+
   ava_child: {
     outside: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b73/R0fN8fqc4inUPgc6sXF6__2814df1bebde4b4284d41702ccbfcfab.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b83/TtFTkY3eWw6xnx6Y9Iz5f_375a5c3015a24165bee058a64c1560be.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b91/Aa6UrIDR_WkMik604pkEY_27733b16e6d148f6895725a2f563bfe9.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877ba2/DO9kN8GEKR_UQo1FpmvmE_1451af49eb864eb6935dedddb40e30d9.png" },
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b73/R0fN8fqc4inUPgc6sXF6__2814df1bebde4b4284d41702ccbfcfab.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b83/TtFTkY3eWw6xnx6Y9Iz5f_375a5c3015a24165bee058a64c1560be.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b91/Aa6UrIDR_WkMik604pkEY_27733b16e6d148f6895725a2f563bfe9.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b8b/TkkNHiGdVX_RfzQPMG3lg_3b4f18a4e95e411bbbe2d3b78dea712f.png",
+      },
     },
+
     home: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b7e/ahvs2-_1ACMdPzFIJ7ad6_186957b0e03744199c644f6f57cf654d.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b89/ZF1bc80eOMWHqsj7YDPNr_4a4a704327e4489eb7671373bbd4927c.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b96/rBFAjnm8NwG525g6Vwpgw_2cca1f5585a44769aa41b618aeb08c88.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877ba8/rIid4PCWLhw2bFvBx2b4Q_83d0c83ee1c3471a99deebefcc0cd178.png" },
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b7e/ahvs2-_1ACMdPzFIJ7ad6_186957b0e03744199c644f6f57cf654d.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b89/ZF1bc80eOMWHqsj7YDPNr_4a4a704327e4489eb7671373bbd4927c.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b96/rBFAjnm8NwG525g6Vwpgw_2cca1f5585a44769aa41b618aeb08c88.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b7f/ll7PtgA5ZH6yMC5ZCNWDo_823edc64a7f04c719f859f77ea052788.png",
+      },
     },
+
     school: {
-      head:   { imageUrl: "https://v3b.fal.media/files/b/0a877b7a/9HfbCzaT6r8tJGfYd3yLn_dfb4f7c20c9341a9a0696dbbac1e6cb9.png" },
-      chest:  { imageUrl: "https://v3b.fal.media/files/b/0a877b8d/of_4lHRQr6V0sCFmCUEPF_384b164600964757a326fe53a6bf59f2.png" },
-      stomach:{ imageUrl: "https://v3b.fal.media/files/b/0a877b9d/aHS8PSi0Uvc0leit8LI5A_3a19a08c0a7645568b30a15f57c7bb68.png" },
-      breathing_or_choking: { imageUrl: "https://v3b.fal.media/files/b/0a877bad/bH8dxnyLJ3rWn2ZdkwAP4_942a2bba9125470f92e5dee91ca98a81.png" },
+      head: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b7a/9HfbCzaT6r8tJGfYd3yLn_dfb4f7c20c9341a9a0696dbbac1e6cb9.png",
+      },
+      chest: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b8d/of_4lHRQr6V0sCFmCUEPF_384b164600964757a326fe53a6bf59f2.png",
+      },
+      stomach: {
+        imageUrl: "https://v3b.fal.media/files/b/0a877b9d/aHS8PSi0Uvc0leit8LI5A_3a19a08c0a7645568b30a15f57c7bb68.png",
+      },
+      breathing_or_choking: {
+        imageUrl: "https://v3b.fal.media/files/b/0a878b85/XBlZFIugkvSIzPG5UJ4fy_c13073ae9f4c4a49a70e0a628732c955.png",
+      },
     },
   },
 };
+
 
 
 
