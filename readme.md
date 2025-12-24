@@ -30,6 +30,32 @@ Existing systems rely on:
 ---
 
 ## 💡 Our Solution
+System Layers
+
+[User Login]
+   |
+   |--(silent)--> [Browser GPS] --> POST /api/location (token)
+   |
+[Profile Step: child + guardian]
+   |
+[Hero Selection]
+   |
+[Scenario Selection]
+   |
+[Symptom Selection]
+   |
+[Severity Selection]
+   |
+[Overlay View]
+   |    - Non-emergency: "Sympathy/Support image"
+   |
+[Save Episode locally]  --> localStorage(truevoice_episodes)
+   |
+[Final Screen]
+   |--> Episodes list
+   |--> Analytics
+   |--> Attendance marking
+
 
 **TrueVoice** replaces text and medical jargon with:
 
@@ -142,33 +168,57 @@ http://localhost:5000
 
 ---
 
-### 2️⃣ Run Backend
-
-```bash
+Run Backend
 cd fibo-backend/fibo-backend
 npm install
+
 ✅ Create .env file (REQUIRED — not included in GitHub for security)
-Create this file here:
+
+Create this file at:
+
 fibo-backend/fibo-backend/.env
 
-Add these variables:
 
-env
-Copy code
+Add the following environment variables:
+
 FAL_KEY=YOUR_FAL_KEY_HERE
 OPENAI_API_KEY=YOUR_OPENAI_KEY_HERE
 NODE_ENV=development
 PORT=5000
-Now start backend:
 
-bash
-Copy code
+
+⚠️ Note for judges:
+API keys are required only if you want to regenerate images.
+For demo purposes, pre-generated images are already included.
+
+▶️ Start Backend Server
 npm run dev
+
+
 Backend runs on:
 
 http://localhost:5000
-(Used mainly for health check, demo auth, and FIBO image generation APIs)
 
+
+Used mainly for:
+
+Health check (/api/ping)
+
+Demo authentication
+
+Location + SOS APIs
+
+(Optional) FIBO image generation
+
+🔐 Demo Login Credentials (Hackathon Mode)
+
+For demo and judging, authentication is simplified:
+
+Email: any valid email
+Password: demo123
+
+
+This is intentional for hackathon evaluation — no real user data or signup flow.
 3️⃣ Run Frontend
 Open a new terminal:
 
@@ -177,7 +227,7 @@ Copy code
 cd fibo-frontend
 npm install
 npm run dev
-✅ (Optional) Frontend .env
+✅  Frontend .env
 If you want to set the API base URL explicitly, create:
 fibo-frontend/.env
 
@@ -253,5 +303,6 @@ This repository represents a **stable demo build**, ready for review and deploym
 
 TrueVoice is not just a UI —
 it is a **translation layer between emotion and care**.
+
 
 
