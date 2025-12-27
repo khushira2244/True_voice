@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import AttendModal from "../../steps/AttendModal.jsx"
+import AttendModal from "../../steps/AttendModal.jsx";
 
 export default function FinalStep({
   EPISODE_KEY,
@@ -10,11 +10,12 @@ export default function FinalStep({
   setAuthed,
   finalView,
   setFinalView,
+  setHeaderOverride,
+
 }) {
-  // Optional: if finalView ever becomes undefined, default to episodes
   const view = finalView || "episodes";
 
-  // ✅ state (modal)
+  // ✅ modal state
   const [attendOpen, setAttendOpen] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(null);
 
@@ -34,10 +35,10 @@ export default function FinalStep({
   // ✅ helper to save episodes back
   function saveEpisodes(next) {
     localStorage.setItem(EPISODE_KEY, JSON.stringify(next));
-    setRefreshTick((t) => t + 1); // force saved to refresh
+    setRefreshTick((t) => t + 1);
   }
 
-  // 1) Read saved episodes safely
+  // ✅ Read saved episodes safely
   const saved = useMemo(() => {
     try {
       const raw = localStorage.getItem(EPISODE_KEY);
@@ -62,7 +63,6 @@ export default function FinalStep({
     "#607d8b",
   ];
 
-  // 2) ✅ Counts must be defined BEFORE symptomData uses them
   const symptomCount = useMemo(() => {
     return saved.reduce((acc, e) => {
       const key = e?.symptomId;
@@ -85,13 +85,27 @@ export default function FinalStep({
     return saved.filter((e) => e?.symptomId === "emergency").length;
   }, [saved]);
 
-  // 3) ✅ Build chart data AFTER counts exist
   const symptomData = useMemo(() => {
     return Object.entries(symptomCount)
       .filter(([name]) => name)
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
   }, [symptomCount]);
+
+  // ✅ scenarioMeta helper for current selected episode
+  const selectedEpisode = selectedIdx != null ? episodes10[selectedIdx] : null;
+  const scenarioMeta = useMemo(() => {
+    if (!selectedEpisode) return null;
+    return {
+      heroId: selectedEpisode.heroId,
+      scenarioId: selectedEpisode.scenarioId,
+      symptomId: selectedEpisode.symptomId,
+      severityId: selectedEpisode.severityId,
+      scenarioLabel: selectedEpisode.scenarioId, // simple for now
+    };
+  }, [selectedEpisode]);
+
+  
 
   return (
     <div className="final-page">
@@ -137,31 +151,27 @@ export default function FinalStep({
                   No episodes yet. Start one to see it here.
                 </div>
               ) : (
-                // ✅ replaced map block (dot + color + click)
                 episodes10.map((ep, idx) => {
-                  const attended = ep?.attended === true; // ✅ strict fallback
+                  const attended = ep?.attended === true;
 
                   return (
                     <div
                       key={ep.id || idx}
-                      className={`episode-card ${
-                        attended
+                      className={`episode-card ${attended
                           ? "episode-card--attended"
                           : "episode-card--notAttended"
-                      } ${!attended ? "episode-card--clickable" : ""}`}
+                        } ${!attended ? "episode-card--clickable" : ""}`}
                       onClick={() => {
-                        if (attended) return; // ✅ attended not clickable
+                        if (attended) return;
                         setSelectedIdx(idx);
                         setAttendOpen(true);
                       }}
                     >
-                      {/* ✅ status dot only */}
                       <span
-                        className={`status-dot ${
-                          attended
+                        className={`status-dot ${attended
                             ? "status-dot--attended"
                             : "status-dot--notAttended"
-                        }`}
+                          }`}
                       />
 
                       <div>
@@ -182,7 +192,7 @@ export default function FinalStep({
               )}
             </div>
 
-            {/* ✅ modal just below grid */}
+            {/* ✅ 2-step AttendModal */}
             <AttendModal
               open={attendOpen}
               title="Mark as attended"
@@ -190,16 +200,20 @@ export default function FinalStep({
                 name: profile?.guardianName || "",
                 relationship: profile?.relationship || "Mother",
               }}
+              scenarioMeta={scenarioMeta}
+
+              // ✅ THIS is the missing link
+              onHeaderChange={setHeaderOverride}
+
               onClose={() => {
+                setHeaderOverride?.(null);
                 setAttendOpen(false);
                 setSelectedIdx(null);
               }}
-              onSubmit={(payload) => {
-                // payload: { type, name, relationship, attendedAt }
+              onSubmit={(attendedBy) => {
+                
 
-                // IMPORTANT: selectedIdx is index in episodes10 (last 10 reversed)
-                // We must map it back to the real index in `saved`.
-                const realIndex = saved.length - 1 - selectedIdx; // because reversed
+                const realIndex = saved.length - 1 - selectedIdx;
 
                 const next = [...saved];
                 const old = next[realIndex] || {};
@@ -207,18 +221,17 @@ export default function FinalStep({
                 next[realIndex] = {
                   ...old,
                   attended: true,
-                  attendedBy: payload,
+                  attendedBy: attendedBy || null,
                 };
 
                 saveEpisodes(next);
 
                 setAttendOpen(false);
                 setSelectedIdx(null);
-
-                // keep view on episodes
                 setFinalView("episodes");
               }}
             />
+
 
             {/* ACTION BUTTONS */}
             <div className="final-actions">
@@ -254,7 +267,6 @@ export default function FinalStep({
           </>
         ) : (
           <div className="analytics-wrap">
-            {/* ONE KPI BOX */}
             <div className="analytics-kpiBox">
               <div className="kpiBlock">
                 <div className="kpiNum">{saved.length}</div>
@@ -269,7 +281,6 @@ export default function FinalStep({
               </div>
             </div>
 
-            {/* PIE CHART (Symptoms) */}
             {symptomData.length === 0 ? (
               <div style={{ opacity: 0.8 }}>
                 No symptom data yet. Create some episodes first.
@@ -279,7 +290,6 @@ export default function FinalStep({
                 <div className="analytics-pieTitle">Symptoms distribution</div>
 
                 <div className="pieRow">
-                  {/* legend */}
                   <div className="legendChips">
                     {symptomData.slice(0, 10).map((s, i) => (
                       <div className="chip" key={s.name}>
@@ -296,7 +306,6 @@ export default function FinalStep({
                     ))}
                   </div>
 
-                  {/* chart */}
                   <div className="pieBox">
                     <ResponsiveContainer width="100%" height={320}>
                       <PieChart>

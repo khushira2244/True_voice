@@ -4,6 +4,9 @@ import avaImg from "../data/ava.png";
 import sosImg from "../data/sos_img.png"
 
 
+
+
+
 const FIBO_HERO_URLS = {
   leo_child:
     "https://v3b.fal.media/files/b/0a8737c6/Wpq_rUZFf-fY8vWE9gbsP_ca99c0a2c7cf430293e611c6ffcf2939.png",

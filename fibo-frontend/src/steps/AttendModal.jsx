@@ -1,27 +1,40 @@
 // src/app/steps/AttendModal.jsx
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import SupportImagePanel from "./SupportImagePanel.jsx";
 
 /**
- * AttendModal
- * - Reusable modal to mark an episode as "attended"
- * - Returns minimal info to parent via onSubmit(payload)
+ * AttendModal (2-step)
+ * stage:
+ *  - "attend": fill who attended
+ *  - "support": generate/choose support image OR skip
  *
- * payload shape:
+ * Final payload returned to parent via onSubmit:
  * {
- *   type: "guardian" | "other",
- *   name: string,
- *   relationship: string,
- *   attendedAt: ISOString
+ *   attended: true,
+ *   attendedBy: { type, name, relationship, attendedAt },
+ *   support: { promptMeta, imageUrl, createdAt } | null
  * }
  */
 export default function AttendModal({
   open,
   title = "Mark as attended",
   initialMode = "guardian", // "guardian" | "other"
-  guardianDefault = { name: "", relationship: "Mother" }, // from profile (optional)
+  guardianDefault = { name: "", relationship: "Mother" },
+
+  // Optional: pass context so SupportImagePanel can include scenario info
+  scenarioMeta = null, // e.g. { heroId, scenarioId, symptomId, severityId, scenarioLabel }
+
   onClose,
   onSubmit,
+
+  // ✅ NEW: forwarded from App.jsx so SupportImagePanel can live-update header
+  // Pass setHeaderOverride as this prop.
+  onHeaderChange,
 }) {
+  const [stage, setStage] = useState("attend"); // "attend" | "support"
+  const [attendedByDraft, setAttendedByDraft] = useState(null);
+
   const [mode, setMode] = useState(initialMode);
 
   const [guardianName, setGuardianName] = useState(guardianDefault?.name || "");
@@ -37,25 +50,39 @@ export default function AttendModal({
   // reset on open
   useEffect(() => {
     if (!open) return;
+
+    setStage("attend");
+    setAttendedByDraft(null);
+
     setMode(initialMode);
     setGuardianName(guardianDefault?.name || "");
     setGuardianRel(guardianDefault?.relationship || "Mother");
     setOtherName("");
     setOtherRel("");
     setErr("");
-  }, [open, initialMode, guardianDefault?.name, guardianDefault?.relationship]);
+
+    // ✅ ensure header override resets when modal opens fresh
+    onHeaderChange?.(null);
+  }, [
+    open,
+    initialMode,
+    guardianDefault?.name,
+    guardianDefault?.relationship,
+    onHeaderChange,
+  ]);
 
   // ESC close
   useEffect(() => {
     if (!open) return;
     function onKey(e) {
-      if (e.key === "Escape") onClose?.();
+      if (e.key === "Escape") {
+        onHeaderChange?.(null);
+        onClose?.();
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  const isOther = mode === "other";
+  }, [open, onClose, onHeaderChange]);
 
   const canSubmit = useMemo(() => {
     if (mode === "guardian") {
@@ -75,7 +102,8 @@ export default function AttendModal({
     return "";
   }
 
-  function handleSubmit() {
+  // Step 1 confirm → move to Support step
+  function handleConfirmAttended() {
     const msg = validate();
     if (msg) {
       setErr(msg);
@@ -83,30 +111,86 @@ export default function AttendModal({
     }
     setErr("");
 
-    const payload = {
+    const attendedBy = {
       type: mode,
       name: mode === "guardian" ? guardianName.trim() : otherName.trim(),
       relationship: mode === "guardian" ? guardianRel.trim() : otherRel.trim(),
       attendedAt: new Date().toISOString(),
     };
 
-    onSubmit?.(payload);
+    setAttendedByDraft(attendedBy);
+
+    // ✅ when we enter support step, show default header text (until user types)
+    onHeaderChange?.("We are here For You");
+
+    setStage("support");
   }
+
+  // ✅ central finish helper: parent always gets consistent payload
+  function finish(supportPayloadOrNull = null) {
+-  onHeaderChange?.(null);
+
+  onSubmit?.({
+    attended: true,
+    attendedBy: attendedByDraft,
+    support: supportPayloadOrNull
+      ? { ...supportPayloadOrNull, createdAt: new Date().toISOString() }
+      : null,
+  });
+}
+
 
   if (!open) return null;
 
+  // ✅ PORTAL SUPPORT STEP (no nested modal, no clipping, no double overlay)
+  if (stage === "support") {
+    return createPortal(
+      <SupportImagePanel
+        scenarioMeta={scenarioMeta}
+        attendedBy={attendedByDraft}
+        initialMessage=""
+
+        // ✅ NEW: push header text live while typing
+        onHeaderChange={onHeaderChange}
+        // (SupportImagePanel will call onHeaderChange(val) on input change)
+
+        onBack={() => {
+          onHeaderChange?.(null);
+          setStage("attend");
+        }}
+        onSkip={() => finish(null)}
+        onDone={(supportPayload) => {
+          // SupportImagePanel can call onDone() with or without payload
+          // If it returns nothing, treat as "no support"
+          finish(supportPayload || null);
+        }}
+      />,
+      document.body
+    );
+  }
+
+  // ✅ ATTEND STEP (normal modal)
   return (
     <div
       className="tv-modal-overlay"
       onMouseDown={(e) => {
-        // click outside closes
-        if (e.target === e.currentTarget) onClose?.();
+        if (e.target === e.currentTarget) {
+          onHeaderChange?.(null);
+          onClose?.();
+        }
       }}
     >
       <div className="tv-modal" role="dialog" aria-modal="true">
         <div className="tv-modal-head">
           <div className="tv-modal-title">{title}</div>
-          <button className="tv-modal-x" onClick={onClose} aria-label="Close">
+          <button
+            className="tv-modal-x"
+            onClick={() => {
+              onHeaderChange?.(null);
+              onClose?.();
+            }}
+            aria-label="Close"
+          >
             ✕
           </button>
         </div>
@@ -142,7 +226,7 @@ export default function AttendModal({
 
         {/* Body */}
         <div className="tv-modal-body">
-          {!isOther ? (
+          {mode !== "other" ? (
             <>
               <label className="tv-field">
                 <div className="tv-label">Guardian Name</div>
@@ -204,13 +288,19 @@ export default function AttendModal({
 
         {/* Footer */}
         <div className="tv-modal-actions">
-          <button className="tv-btn" onClick={onClose}>
+          <button
+            className="tv-btn"
+            onClick={() => {
+              onHeaderChange?.(null);
+              onClose?.();
+            }}
+          >
             Cancel
           </button>
 
           <button
             className="tv-btn tv-btn-primary"
-            onClick={handleSubmit}
+            onClick={handleConfirmAttended}
             disabled={!canSubmit}
           >
             Confirm
@@ -218,7 +308,7 @@ export default function AttendModal({
         </div>
       </div>
 
-      {/* Minimal styles - keep or move to App.css */}
+      {/* Inline styles (kept from your original) */}
       <style>{`
         .tv-modal-overlay{
           position:fixed; inset:0; z-index:99999;
@@ -227,7 +317,7 @@ export default function AttendModal({
           padding:18px;
         }
         .tv-modal{
-          width:min(520px, 95vw);
+          width:min(720px, 95vw);
           background:rgba(255,255,255,.92);
           backdrop-filter: blur(8px);
           border-radius:18px;

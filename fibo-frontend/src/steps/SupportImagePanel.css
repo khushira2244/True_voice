@@ -1,0 +1,290 @@
+/* =========================
+   Full-screen overlay modal
+   ========================= */
+.sip-root{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: grid;
+  place-items: center;
+
+  /* account for fixed navbar (~72px) */
+  padding: 90px 18px 18px;
+
+  background: rgba(0,0,0,0.35);
+}
+
+/* =========================
+   Card container
+   ========================= */
+.sip-card{
+  width: min(980px, 96vw);
+  height: calc(100vh - 120px);     /* ✅ fixed height so layout is stable */
+  max-height: calc(100vh - 120px);
+
+  display: flex;                   /* ✅ column layout */
+  flex-direction: column;          /* ✅ */
+
+  background: rgba(10, 14, 22, 0.78);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 70px rgba(0,0,0,0.35);
+  overflow: hidden;                /* ✅ prevents footer overlap artifacts */
+  color: #e8eefc;
+}
+
+/* =========================
+   Header
+   ========================= */
+.sip-head{
+  flex: 0 0 auto;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 16px 10px;
+}
+
+.sip-title{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:0.2px;
+}
+
+.sip-sub{
+  margin-top:4px;
+  font-size:12px;
+  opacity:0.75;
+}
+
+/* =========================
+   Tabs
+   ========================= */
+.sip-tabs{
+  flex: 0 0 auto;                  /* ✅ tabs never shrink weirdly */
+  display:flex;
+  gap:10px;
+  padding:5px 16px 14px ;
+  overflow:auto;
+
+  /* ✅ keep tabs visible / stable */
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: rgba(10, 14, 22, 0.65);
+  backdrop-filter: blur(10px);
+}
+
+.sip-tab{
+  flex:0 0 auto;
+  height:38px;
+  padding:0px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#e8eefc;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.sip-tab.is-active{
+  background: rgba(99,102,241,0.22);
+  border-color: rgba(99,102,241,0.38);
+}
+
+/* =========================
+   Body (ONLY scroll area)
+   ========================= */
+.sip-body{
+  flex: 1 1 auto;                  /* ✅ fills remaining height */
+  min-height: 0;                   /* ✅ critical for flex scroll */
+  overflow-y: auto;                /* ✅ only body scrolls */
+  overflow-x: hidden;
+  padding: 0 16px 18px;
+
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+
+  /* ✅ space so footer never covers content */
+  padding-bottom: 110px;
+}
+
+.sip-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.sip-field{
+  flex:1;
+  min-width: 240px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top: 10px;
+}
+
+.sip-label{
+  font-size:12px;
+  font-weight:800;
+  opacity:0.9;
+}
+
+.sip-input,
+.sip-textarea{
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color:#e8eefc;
+  outline:none;
+  padding: 10px 12px;
+}
+
+.sip-input{ height:42px; }
+.sip-textarea{ resize: vertical; }
+
+.sip-input:focus,
+.sip-textarea:focus{
+  border-color: rgba(99,102,241,0.45);
+}
+
+/* =========================
+   Fix native select dropdown (dark)
+   ========================= */
+select,
+.sip-input{
+  color-scheme: dark;              /* ✅ key line */
+}
+
+select.sip-input{
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+select.sip-input option{
+  background: #020617;
+  color: #e5e7eb;
+}
+
+select.sip-input option:checked{
+  background: #1e40af;
+  color: #ffffff;
+}
+
+/* =========================
+   Sliders
+   ========================= */
+.sip-slider{
+  width:100%;
+  padding:12px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+}
+
+.sip-slider-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-weight:800;
+  font-size:12px;
+  margin-bottom:10px;
+}
+
+.sip-muted{ opacity:0.75; }
+
+.sip-slider input[type="range"]{
+  width:100%;
+}
+
+/* =========================
+   JSON preview
+   ========================= */
+.sip-json{
+  width:100%;
+  max-height: 320px;
+  overflow:auto;
+  padding: 12px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35);
+  color:#dbeafe;
+  font-size:12px;
+}
+
+/* =========================
+   Image preview
+   ========================= */
+.sip-previewBox{
+  margin-top: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+}
+
+.sip-previewBox img{
+  width: 100%;
+  max-height: 45vh;
+  object-fit: contain;
+  display: block;
+}
+
+/* =========================
+   Footer (sticky, not overlapping)
+   ========================= */
+.sip-foot{
+  flex: 0 0 auto;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding: 12px 16px 16px;
+
+  border-top: 1px solid rgba(255,255,255,0.08);
+
+  /* ✅ stick to bottom + blur so it feels like modal footer */
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  background: rgba(10, 14, 22, 0.70);
+  backdrop-filter: blur(10px);
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.sip-btn{
+  height:42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color:#e8eefc;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.sip-btn:hover{
+  background: rgba(255,255,255,0.09);
+}
+
+.sip-btn-primary{
+  background: rgba(99,102,241,0.85);
+  border-color: rgba(99,102,241,0.95);
+}
+
+/* =========================
+   Errors
+   ========================= */
+.sip-error{
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(248,113,113,0.15);
+  border: 1px solid rgba(248,113,113,0.35);
+  color: #fecaca;
+  font-weight: 800;
+}

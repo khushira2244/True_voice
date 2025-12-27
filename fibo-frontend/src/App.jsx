@@ -1,10 +1,8 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { api } from "./api.js";
 import { INITIAL_EPISODE_STATE } from "./episodeState.js";
 import { seedFakeEpisodes, EPISODE_KEY } from "./data/fakeEpisode.js";
 import { SOS_IMAGE } from "./data/heroes.js";
-
 
 import Landing from "./steps/Landing.jsx";
 import LoginPage from "./steps/Login.jsx";
@@ -13,34 +11,46 @@ import "./App.css";
 
 import avaSympathyImg from "./data/ava_symphathy.png";
 
-import { STEP_ORDER } from "./app/constants.js";
 import ProfileStep from "./steps/ProfileStep.jsx";
 
 import CarouselStep from "./app/components/CarouselStep.jsx";
-import { getScenarioItems, getSymptomItems, getSeverityItems } from "./app/episode/episodeSelectors.js";
+import {
+  getScenarioItems,
+  getSymptomItems,
+  getSeverityItems,
+} from "./app/episode/episodeSelectors.js";
 import AppNavbar from "./app/layout/AppNavbar.jsx";
 import FinalStep from "./app/steps/FinalStep.jsx";
+
 const PROFILE_KEY = "truevoice_profile";
+const SUPPORT_STORE_KEY = "truevoice_support_images_v1";
+
+function safeReadSupportStore() {
+  try {
+    return JSON.parse(localStorage.getItem(SUPPORT_STORE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
 
 function App() {
   const [backendOk, setBackendOk] = useState(false);
   const [loadingHealth, setLoadingHealth] = useState(true);
+  const [headerOverride, setHeaderOverride] = useState(null);
 
   const [currentStep, setCurrentStep] = useState("landing");
   const [authed, setAuthed] = useState(false);
 
-  const [finalView, setFinalView] = useState("episodes"); // "episodes" | "analytics"
+  const [finalView, setFinalView] = useState("episodes"); 
 
   const [episodeState, setEpisodeState] = useState(INITIAL_EPISODE_STATE);
 
   const [showSympathy, setShowSympathy] = useState(false);
   const [pendingSymptomId, setPendingSymptomId] = useState(null);
 
-
   const [profile, setProfile] = useState(() => {
     return JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
   });
-
 
   useEffect(() => {
     (async () => {
@@ -95,13 +105,55 @@ function App() {
         );
       case "severity":
         return "Is it severe or not severe?";
-
       case "final":
         return "All done 💌";
       default:
         return "";
     }
   }, [currentStep]);
+
+  // ✅ derive sympathy overlay image + header from the same store key
+  const sympathyMeta = useMemo(() => {
+    if (!showSympathy) return { overlayImage: null, headerText: null };
+
+    // Emergency flow
+    if (episodeState?.symptomId === "emergency") {
+      return {
+        overlayImage: SOS_IMAGE,
+        headerText: "Emergency — Call for help",
+      };
+    }
+
+    // Normal flow
+    let overlayImage = avaSympathyImg;
+    let headerText = "We are there for help 👪";
+
+    const store = safeReadSupportStore();
+    const supportKey = `${episodeState?.heroId}__${episodeState?.scenarioId}__${episodeState?.symptomId}__${episodeState?.severityId}`;
+    const entry = store?.[supportKey];
+
+    if (entry?.enabled === true && entry?.imageUrl) {
+      overlayImage = entry.imageUrl;
+    }
+
+    const h = (entry?.headerText || "").trim();
+    if (h) headerText = h;
+
+    return { overlayImage, headerText };
+  }, [
+    showSympathy,
+    episodeState?.heroId,
+    episodeState?.scenarioId,
+    episodeState?.symptomId,
+    episodeState?.severityId,
+  ]);
+
+  // ✅ apply header override only while sympathy is showing (avoid setState during render)
+  useEffect(() => {
+    if (showSympathy) {
+      setHeaderOverride(sympathyMeta.headerText || null);
+    }
+  }, [showSympathy, sympathyMeta.headerText]);
 
   if (currentStep === "landing") {
     return <Landing ms={4000} onDone={() => goTo("login")} />;
@@ -118,11 +170,13 @@ function App() {
             const eps = seedFakeEpisodes({ count: 20 });
             console.log("✅ Demo seeded episodes:", eps);
           } else {
-            console.log("ℹ️ Episodes already exist, not seeding again.", existing.length);
+            console.log(
+              "ℹ️ Episodes already exist, not seeding again.",
+              existing.length
+            );
           }
 
           goTo("profile");
-
         }}
       />
     );
@@ -142,12 +196,12 @@ function App() {
     );
   }
 
-
   async function showSympathyThenSaveAndFinish(payload) {
     setShowSympathy(true);
 
     setTimeout(() => {
       setShowSympathy(false);
+      setHeaderOverride(null); // ✅ clear after sympathy ends
 
       const key = "truevoice_episodes";
       const prev = JSON.parse(localStorage.getItem(key) || "[]");
@@ -180,11 +234,10 @@ function App() {
       <div className="step-container hero-step">
         <div className="hero-card">
           <img
-            src={episodeState?.symptomId === "emergency" ? SOS_IMAGE : avaSympathyImg}
+            src={sympathyMeta.overlayImage || avaSympathyImg}
             alt="overlay"
             className="hero-main-image"
           />
-
         </div>
       </div>
     );
@@ -241,6 +294,7 @@ function App() {
 
             setTimeout(() => {
               setShowSympathy(false);
+              setHeaderOverride(null); // ✅ clear after sympathy ends
 
               // ✅ save episode
               const key = "truevoice_episodes";
@@ -274,9 +328,13 @@ function App() {
         onBack={() => goTo("scenario")}
       />
     );
-
   } else if (currentStep === "severity") {
-    const items = getSeverityItems({ heroId, scenarioId, symptomId, pendingSymptomId });
+    const items = getSeverityItems({
+      heroId,
+      scenarioId,
+      symptomId,
+      pendingSymptomId,
+    });
     const img = items?.[0]?.imageUrl; // we show ONLY ONE image (severe preview)
 
     const sId = pendingSymptomId || symptomId;
@@ -321,11 +379,17 @@ function App() {
             flexWrap: "wrap",
           }}
         >
-          <button className="btn btn-secondary" onClick={() => finishWithSeverity("mild")}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => finishWithSeverity("mild")}
+          >
             Not Severe
           </button>
 
-          <button className="btn btn-primary" onClick={() => finishWithSeverity("severe")}>
+          <button
+            className="btn btn-primary"
+            onClick={() => finishWithSeverity("severe")}
+          >
             Severe
           </button>
         </div>
@@ -338,8 +402,7 @@ function App() {
         </div>
       </div>
     );
-  }
-  else if (currentStep === "final") {
+  } else if (currentStep === "final") {
     stepComponent = (
       <FinalStep
         EPISODE_KEY={EPISODE_KEY}
@@ -349,17 +412,21 @@ function App() {
         setAuthed={setAuthed}
         finalView={finalView}
         setFinalView={setFinalView}
+        setHeaderOverride={setHeaderOverride}
       />
     );
   }
 
-  const showNavbar = authed && currentStep !== "landing" && currentStep !== "login";
+  const showNavbar =
+    authed && currentStep !== "landing" && currentStep !== "login";
+
+  console.log("headerOverride =", headerOverride, "| currentStep =", currentStep);
 
   return (
     <div className="app-root">
       {showNavbar ? (
         <AppNavbar
-          headerText={headerText}
+          headerText={headerOverride || headerText}
           onLogout={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -373,7 +440,11 @@ function App() {
         <div
           className={`app-shell
     ${currentStep === "final" ? "app-shell--flat" : ""}
-    ${currentStep === "final" && finalView === "analytics" ? "app-shell--scroll" : ""}
+    ${
+      currentStep === "final" && finalView === "analytics"
+        ? "app-shell--scroll"
+        : ""
+    }
   `}
         >
           {stepComponent}
