@@ -349,7 +349,7 @@ export default function AttendModal({
           height:40px;
           border-radius:12px;
           border:1px solid rgba(0,0,0,.12);
-          background:white;
+          background: #aeb9d3 ;
           font-weight:800;
           cursor:pointer;
         }
@@ -365,15 +365,39 @@ export default function AttendModal({
         }
         .tv-field{display:flex; flex-direction:column; gap:6px;}
         .tv-label{font-weight:800; color:#0f172a;}
-        .tv-input{
-          height:44px;
-          border-radius:12px;
-          border:1px solid rgba(0,0,0,.14);
-          padding:0 12px;
-          outline:none;
-          background:white;
-        }
-        .tv-input:focus{border-color:rgba(0,0,0,.35);}
+       .tv-input{
+  height:44px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.14);
+  padding:0 12px;
+
+  /* 🔒 lock color */
+  background-color:#aeb9d3 !important;
+  color:#0f172a;
+
+  outline:none;
+
+  /* 🔥 kill browser default styles */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 🚫 stop black / blue on click */
+.tv-input:focus,
+.tv-input:active,
+.tv-input:focus-visible{
+  background-color:#aeb9d3 !important;
+  color:#0f172a;
+  border-color: rgba(0,0,0,.35);
+  outline:none;
+  box-shadow:none;
+}
+
+/* placeholder */
+.tv-input::placeholder{
+  color: rgba(15,23,42,.55);
+}
+
         .tv-hint{font-size:12px; opacity:.72; margin-top:-4px;}
         .tv-error{
           background:rgba(255,0,0,.08);

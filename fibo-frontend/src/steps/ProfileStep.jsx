@@ -275,10 +275,38 @@ export default function ProfileStep({ initialProfile = null, onBack, onContinue 
         /* Fields */
         .field{display:flex;flex-direction:column;gap:6px;}
         .field-label{font-weight:700;}
-        .field-input{height:44px;border-radius:12px;border:1px solid rgba(0,0,0,.15);padding:0 12px;
-          outline:none;background:white;}
-        .field-input:focus{border-color:rgba(0,0,0,.35);}
-        .field-hint{font-size:12px;opacity:.75;margin-top:-2px;}
+        .field-input{
+  height:44px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.15);
+  padding:0 12px;
+  outline:none;
+
+  /* 🔒 lock background */
+  background-color:#aeb9d3 !important;
+  color:#0f172a;
+
+  /* 🔒 stop browser highlight */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 🔥 VERY IMPORTANT: stop focus/active override */
+.field-input:focus,
+.field-input:active,
+.field-input:focus-visible{
+  background-color:#aeb9d3 !important;
+  color:#0f172a;
+  border-color: rgba(0,0,0,.35);
+  outline: none;
+  box-shadow: none;
+}
+
+/* Placeholder */
+.field-input::placeholder{
+  color: rgba(15,23,42,.55);
+}
+
 
         .form-error{background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);
           padding:10px 12px;border-radius:12px;font-weight:700;color:#7f1d1d;}

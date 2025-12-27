@@ -166,7 +166,7 @@ select.sip-input{
 }
 
 select.sip-input option{
-  background: #020617;
+  background: #020617 !important;
   color: #e5e7eb;
 }
 

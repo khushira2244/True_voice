@@ -18,3 +18,23 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
 }
+
+/* Base select */
+select {
+  background-color: #0f172a !important; /* dark slate */
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Dropdown options */
+select option {
+  background-color: #0f172a !important; /* SAME dark */
+  color: #ffffff !important;
+}
+
+/* Hover / selected option */
+select option:checked,
+select option:hover {
+  background-color: #1e293b !important; /* slightly lighter */
+  color: #ffffff !important;
+}
