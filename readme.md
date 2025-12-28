@@ -12,24 +12,58 @@ Open terminal:
 
 cd fibo-backend/fibo-backend
 npm install
+🔐 Backend Environment Variables (Required)
 
- Create Backend .env (Required)
+The backend will not start properly unless all required environment variables are defined.
 
-Create:
+Create the file:
 
 fibo-backend/fibo-backend/.env
 
 
-Add:
+Add the following:
 
+# ===============================
+# Core Server Configuration
+# ===============================
 NODE_ENV=development
 PORT=5000
 
-#  Demo keys (works for running the app)
+# ===============================
+# Authentication (Demo Mode)
+# ===============================
+JWT_SECRET=demo_jwt_secret
+DEMO_PASSWORD=demo123
+
+# ===============================
+# AI / Image Generation (Demo Safe)
+# ===============================
+# Real keys are NOT required for judging
 FAL_KEY=demo_key
 OPENAI_API_KEY=demo_key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_API_STYLE=chat
 
-🔑 About API Keys (Important)
+# (Optional – only if using Gemini instead of OpenAI)
+GOOGLE_API_KEY=demo_key
+
+# ===============================
+# Weather / Location Defaults
+# ===============================
+WEATHER_LAT=28.6139
+WEATHER_LON=77.2090
+
+🔑 Important Notes for Judges
+
+✅ All values above are demo-safe
+
+✅ Backend will start successfully with these values
+
+✅ Login + auth token flow works with DEMO_PASSWORD=demo123
+
+❌ Real API keys are needed only if regenerating images
+
+For demo evaluation, support images are pre-generated and reused, so real keys are not required.
 
 The backend must start for login + auth token flow.
 
@@ -47,7 +81,25 @@ Backend runs on:
 
 http://localhost:5000
 
-2️⃣ Install & Start Frontend
+2️⃣ Install & Start Frontend (Required)
+
+Before starting the frontend, you must configure the environment file.
+
+📄 Create Frontend .env
+
+Create the file:
+
+fibo-frontend/.env
+
+
+Add the following:
+
+VITE_API_BASE=http://localhost:5000
+
+
+This tells the frontend where the backend API is running.
+
+▶️ Install & Run Frontend
 
 Open a new terminal:
 
@@ -56,21 +108,15 @@ npm install
 npm run dev
 
 
-Frontend runs on:
+Frontend runs at:
 
 http://localhost:5173
 
-(Optional) Frontend .env
+⚠️ Important Note
 
-Create:
+Backend must be running before starting the frontend
 
-fibo-frontend/.env
-
-
-Add:
-
-VITE_API_BASE=http://localhost:5000
-
+Otherwise login and protected API calls will fail
  Demo Login (Required)
 
 Login is required to get an auth token (protected routes).

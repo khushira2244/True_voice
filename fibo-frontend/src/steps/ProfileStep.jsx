@@ -283,7 +283,7 @@ export default function ProfileStep({ initialProfile = null, onBack, onContinue 
   outline:none;
 
   /* 🔒 lock background */
-  background-color:#aeb9d3 !important;
+  background-color:#dadee8 !important;
   color:#0f172a;
 
   /* 🔒 stop browser highlight */
@@ -295,7 +295,7 @@ export default function ProfileStep({ initialProfile = null, onBack, onContinue 
 .field-input:focus,
 .field-input:active,
 .field-input:focus-visible{
-  background-color:#aeb9d3 !important;
+  background-color:#dadee8 !important;
   color:#0f172a;
   border-color: rgba(0,0,0,.35);
   outline: none;

@@ -349,7 +349,7 @@ export default function AttendModal({
           height:40px;
           border-radius:12px;
           border:1px solid rgba(0,0,0,.12);
-          background: #aeb9d3 ;
+          background: white ;
           font-weight:800;
           cursor:pointer;
         }
@@ -371,22 +371,22 @@ export default function AttendModal({
   border:1px solid rgba(0,0,0,.14);
   padding:0 12px;
 
-  /* 🔒 lock color */
-  background-color:#aeb9d3 !important;
+
+  background-color:#dadee8 !important;
   color:#0f172a;
 
   outline:none;
 
-  /* 🔥 kill browser default styles */
+
   -webkit-appearance: none;
   appearance: none;
 }
 
-/* 🚫 stop black / blue on click */
+
 .tv-input:focus,
 .tv-input:active,
 .tv-input:focus-visible{
-  background-color:#aeb9d3 !important;
+  background-color:#dadee8 !important;
   color:#0f172a;
   border-color: rgba(0,0,0,.35);
   outline:none;
