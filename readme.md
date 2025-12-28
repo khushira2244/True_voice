@@ -1,3 +1,28 @@
+🎬 Opening lines (before starting the demo)
+
+“Before I start the live walkthrough, I’d strongly recommend watching this short demo video first.
+It explains the complete end-to-end flow of the application in a stable demo mode, including the sympathy image generation logic, which is an important part of the system design.
+
+This video will give you the full context of how the app works, so the live demo will feel much clearer and easier to follow.”
+
+🔗 Mention the Drive video (judges-only)
+
+“I’ve shared the full demo video via Google Drive for judges.
+The reason it’s on Drive is to keep the experience consistent, fast, and free from generation delays or randomness during evaluation.”
+
+You can show or paste:
+
+Google Drive Demo (Judges Only):
+👉 https://drive.google.com/file/d/1MD6ALJ6idcGIQtyLmoC9HbVV1YLlvK4M/view
+
+🎨 Clarify sympathy image generation (important framing)
+
+“This video also includes the sympathy image generation flow.
+During judging, images are pre-generated using structured prompts to ensure deterministic results, fast UX, and no dependency on live credits — while the backend already supports dynamic generation using the same prompt structure.”
+
+This reassures judges you made a deliberate engineering choice, not a shortcut.
+
+
 🤖 Image Generation During Judging (Stable Demo Mode)
 
 All images used in this project were generated using FIBO via Postman and then saved as static image URLs inside the frontend mapping.
@@ -21,7 +46,7 @@ This does not require any frontend rewrite — only enabling the backend keys an
 
 
 
-Installation & Running the Project (Intermediate)
+Installation & Running the Project and   only made for screen size (1440px to tab mode(768px))
 
 This project has two parts:
 
@@ -543,3 +568,4 @@ safety and consistency metrics
 child-friendly subjective feedback protocols
 
 measurable reduction in anxiety / improved reporting reliability
+
