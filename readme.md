@@ -1,3 +1,26 @@
+🤖 Image Generation During Judging (Stable Demo Mode)
+
+All images used in this project were generated using FIBO via Postman and then saved as static image URLs inside the frontend mapping.
+
+For judging, the frontend intentionally uses these pre-generated FIBO images to ensure:
+
+✅ consistent outputs (no randomness during evaluation)
+
+✅ fast UX (no waiting for generation)
+
+✅ no dependency on live credit usage during judging
+
+The backend already supports dynamic FIBO generation using the same prompt structure and safety rules, and can be enabled after judging if needed.
+
+
+🔧 Post-Judging Mode (Dynamic Generation)
+
+After judging, the backend can be configured to generate new support images dynamically using the same prompt structure and safety rules.
+
+This does not require any frontend rewrite — only enabling the backend keys and calling the existing endpoint.
+
+
+
 Installation & Running the Project (Intermediate)
 
 This project has two parts:
