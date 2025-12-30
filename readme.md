@@ -1,24 +1,21 @@
-🧠 True Voice
+🧠 TRUE VOICE
 
-True Voice is a child-first, visual communication system designed to help autistic and non-verbal children express discomfort, pain, or emotional distress without relying on verbal explanation.
+TRUE VOICE is a CHILD-FIRST, VISUAL COMMUNICATION SYSTEM designed to help AUTISTIC and NON-VERBAL CHILDREN express DISCOMFORT, PAIN, or EMOTIONAL DISTRESS WITHOUT relying on verbal explanation.
 
-Instead of asking children to describe how they feel, the system guides them through a calm, step-by-step visual flow using familiar heroes, places, and simple choices — while keeping parents fully involved in review, safety, and support decisions.
+Instead of asking children to describe how they feel, the system guides them through a CALM, STEP-BY-STEP VISUAL FLOW using FAMILIAR HEROES, PLACES, and SIMPLE CHOICES — while keeping PARENTS FULLY INVOLVED in REVIEW, SAFETY, and SUPPORT DECISIONS.
 
-The design prioritizes emotional safety, predictability, and human-in-the-loop control.
+The design prioritizes EMOTIONAL SAFETY, PREDICTABILITY, and HUMAN-IN-THE-LOOP CONTROL.
 
-🔗 Live Demo
+🔗 LIVE DEMO
 
-Demo URL
-👉 https://truevoicemoment.netlify.app/
+DEMO URL 👉 https://truevoicemoment.netlify.app/
 
-Demo Credentials
-
+DEMO CREDENTIALS
 Email: demo@gmail.com
+
 Password: demo123
 
-
-For judging and evaluation, the demo runs in a stable mode using pre-generated support images to ensure consistent UX and avoid dependency on live generation credits.
-
+For JUDGING AND EVALUATION, the demo runs in a STABLE MODE using PRE-GENERATED SUPPORT IMAGES to ensure CONSISTENT UX and avoid dependency on LIVE GENERATION CREDITS.
 🔄 End-to-End System Flow
 
 <img width="3914" height="14717" alt="flow_design" src="https://github.com/user-attachments/assets/346ac685-684b-4b52-a83c-57beb2b194cb" />
@@ -257,3 +254,4 @@ Safety and consistency metrics
 Child-friendly feedback protocols
 
 Reduced anxiety and improved reporting reliability
+
