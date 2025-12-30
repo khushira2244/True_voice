@@ -1,3 +1,66 @@
+🔗 Live Demo
+
+Demo URL:
+👉 https://truevoicemoment.netlify.app
+
+🔐 Demo Login Credentials
+
+Email: demo@gmail.com
+
+Password: demo123
+
+These credentials are provided for demo and evaluation purposes only.
+
+
+
+System design
+
+flowchart TD
+
+  %% =========================
+  %% INPUT LAYER
+  %% =========================
+  A((Child Interaction))
+  A --> A1[Selections<br/>Hero • Place • Feeling • Severity]
+
+  %% =========================
+  %% DECISION LAYER
+  %% =========================
+  A1 --> B{Frontend Decision Core}
+
+  %% =========================
+  %% STATE FORMATION
+  %% =========================
+  B --> C[Structured Episode State<br/>Local UI JSON]
+
+  %% =========================
+  %% HIDDEN FRONTEND LOGIC
+  %% =========================
+  subgraph HIDDEN[Hidden Frontend Layer]
+    direction TB
+    C --> D[Hero–Place Mapping Matrix]
+    D --> E[Previous Episode Pattern Check]
+    E --> F[Support Rule Resolver<br/>Default vs Guided]
+  end
+
+  %% =========================
+  %% OUTPUT RENDERING
+  %% =========================
+  F --> G[Visual Support Rendering<br/>Images • Tone • Text]
+  F --> H[Scenario & Symptom UI]
+
+  %% =========================
+  %% DISPLAY & FEEDBACK
+  %% =========================
+  G --> I[App Interface]
+  H --> I
+
+  I --> J[Analytics View<br/>Emotion Frequency • Parent Response]
+
+
+
+
+
 🎬 Opening lines (before starting the demo)
 
 “Before I start the live walkthrough, I’d strongly recommend watching this short demo video first.
@@ -69,8 +132,22 @@ Create the file:
 fibo-backend/fibo-backend/.env
 
 
-Add the following:
+Add the following functions and constants:
 
+
+1."import dotenv from 'dotenv';
+
+dotenv.config();
+
+function requireEnv(name) {
+    const value = process.env[name]
+    if(!value){
+        throw new Error(`Environment variables ${name} is required but not set.`)
+
+    }
+    return value
+}
+"
 # ===============================
 # Core Server Configuration
 # ===============================
@@ -568,4 +645,5 @@ safety and consistency metrics
 child-friendly subjective feedback protocols
 
 measurable reduction in anxiety / improved reporting reliability
+
 
