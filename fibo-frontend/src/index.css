@@ -9,7 +9,7 @@ body {
   overflow: hidden;
 
   /* ✅ APP BACKGROUND IMAGE */
-  background-image: url("./data/app-bg.png"); /* put image in /public */
+  /* put image in /public */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

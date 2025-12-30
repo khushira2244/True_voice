@@ -1,7 +1,7 @@
 
-import leoImg from "../data/Leo_child.png";
-import avaImg from "../data/ava.png";
-import sosImg from "../data/sos_img.png"
+const leoImg = "/Leo_child.png";
+const avaImg = "/ava.png";
+const sosImg = "/sos_img.png";
 
 
 

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import LogoSVG from "../data/logo.svg";
 function Landing({ onDone, ms = 30000 }) {
   useEffect(() => {
     const t = setTimeout(() => onDone?.(), ms);
@@ -13,8 +12,7 @@ function Landing({ onDone, ms = 30000 }) {
 
       <div className="landing-center">
         <div className="landing-title">
-
-           <img src={LogoSVG} alt="True Voice logo" />
+          <img src="/logo.svg" alt="True Voice logo" />
         </div>
       </div>
     </div>

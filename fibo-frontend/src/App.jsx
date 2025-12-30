@@ -9,7 +9,8 @@ import LoginPage from "./steps/Login.jsx";
 import HeroStep from "./steps/HeroStep.jsx";
 import "./App.css";
 
-import avaSympathyImg from "./data/ava_symphathy.png";
+
+
 
 import ProfileStep from "./steps/ProfileStep.jsx";
 
@@ -32,6 +33,8 @@ function safeReadSupportStore() {
     return {};
   }
 }
+
+const avaSympathyImg = "/ava_symphathy.png";
 
 function App() {
   const [backendOk, setBackendOk] = useState(false);

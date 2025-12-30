@@ -39,12 +39,13 @@ body {
   color: var(--text-main);
 
   /* ✅ background for whole application */
-  background-image: url("./data/app-bg.png");
+  background-image: url("/app-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+
 
 /* Optional overlay so the white card pops */
 body::before {
@@ -346,7 +347,7 @@ body::before {
 .landing-bg {
   position: absolute;
   inset: 0;
-  background-image: url("./data/Landing_Page.jpg");
+  background-image: url("/Landing_Page.jpg");
   background-size: cover;
   background-position: center;
   transform: scale(1.03);
