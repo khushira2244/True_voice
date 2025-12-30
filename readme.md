@@ -45,19 +45,118 @@ This flow ensures **emotional safety**, **caregiver oversight**, and **long-term
 
 ---
 
-# 🧩 Product Description (FIBO-Based Design)
+## 🌍 Product Vision
 
-True Voice uses **FIBO** as its core image-generation system for **emotional support and sympathy visuals**.
+True Voice’s long-term vision is to become a **trusted communication bridge** between autistic children, caregivers, and support professionals — **without forcing children to speak, label emotions, or conform to verbal expectations**.
 
-## Key Principles
+We envision a future where:
 
-- **Support images are generated using structured prompting**
-- **Visual variation is intentionally limited** to reduce sensory overload
-- **Images are reused deterministically** to ensure familiarity and emotional safety
-- **Parents remain in control** of any custom support generation
-- **AI assists the interaction** — it never replaces parental judgment
+- Children can safely communicate discomfort in their **own visual language**
+- Parents receive **context, not alarms**
+- Support decisions remain **human-led**, not algorithmic
+- AI acts as a **quiet assistant**, never an authority
+
+True Voice is designed to **scale care and understanding**, not automation.
 
 ---
+
+## 👥 Who This Product Is For
+
+### Primary Users
+- Autistic and non-verbal children  
+- Children with sensory processing challenges  
+- Children who struggle with verbal emotional expression  
+
+### Secondary Users
+- Parents and guardians  
+- Teachers and caregivers  
+- Therapists and support professionals *(future, opt-in)*  
+
+Each group interacts with the system differently, but **all interactions are anchored in child comfort and safety first**.
+
+---
+
+## 🧠 What Makes True Voice a Product
+
+True Voice is not a one-off visualization tool.  
+It is a **repeatable, structured system** with:
+
+- **Deterministic visual flows** (familiarity over novelty)
+- **Reusable support images** tied to real situations
+- **Parent-verified guidance loops**
+- **Episode history** that improves future responses
+- **Clear separation** between child input and caregiver decision-making
+
+This makes it suitable for **daily use**, not just emergencies.
+
+---
+
+## 🛡️ Safety, Ethics & Design Boundaries
+
+True Voice is built with **explicit constraints**:
+
+- ❌ No diagnosis  
+- ❌ No automated medical advice  
+- ❌ No behavioral scoring  
+- ❌ No child surveillance  
+
+Instead, it enforces:
+
+- **Human-in-the-loop verification**
+- **Predictable visuals**
+- **Low sensory load**
+- **Consent-based analytics**
+- **Clear ownership of decisions by caregivers**
+
+These boundaries are **intentional and foundational**, not limitations.
+
+---
+
+## 📦 Why FIBO Was Critical (Product-Level Justification)
+
+Most generative systems prioritize **novelty and diversity**.  
+True Voice requires the opposite.
+
+FIBO enables:
+
+- **Structured, repeatable image generation**
+- **Strict control over variation**
+- **Deterministic reuse across episodes**
+- **Scene stability for emotional safety**
+
+This makes FIBO suitable for **assistive and neurodiverse-first applications**, where predictability matters more than creativity.
+
+---
+
+## 🧩 Market & Real-World Applicability
+
+True Voice addresses a **real and underserved gap**:
+
+- Autism support tools focus heavily on assessment  
+- Communication tools often assume verbal participation  
+- Parents lack **contextual emotional history**, only isolated events  
+
+True Voice fits naturally into:
+
+- Home caregiving  
+- Special education environments  
+- Therapy support workflows *(non-clinical)*  
+- Early intervention ecosystems  
+
+It is designed to **integrate**, not disrupt.
+
+---
+
+## 🧭 Product Principles
+
+True Voice follows five core principles:
+
+1. **Child comfort over system intelligence**
+2. **Structure over spontaneity**
+3. **Human decisions over automation**
+4. **Understanding over monitoring**
+5. **Long-term trust over short-term insight**
+
 
 # ▶️ Running the Project Locally
 
@@ -202,5 +301,6 @@ designing **child-safe, non-verbal communication systems** that convert subjecti
 4. **Privacy-preserving longitudinal modeling**
 5. **Human-in-the-loop verification**
 6. **Toward a new benchmark category for emotion-safe AI**
+
 
 
