@@ -288,7 +288,7 @@ It is **not a medical tool**, but a bridge between **children**, **caregivers**,
 
 ---
 
-# 🔬 Research-Oriented Framing
+# 🔬 Research-Oriented 
 
 True Voice can be viewed as an early demonstration of a broader research direction:
 designing **child-safe, non-verbal communication systems** that convert subjective discomfort into structured signals.
