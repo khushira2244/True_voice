@@ -13,29 +13,30 @@ These credentials are provided for demo and evaluation purposes only.
 
 
 
-System design
 
+Mermaid requires **clean, line-by-line graph definitions**.
+
+---
+
+## ✅ The ONLY correct README-safe version (copy-paste)
+
+Use **exactly this**, no edits:
+
+````md
+```mermaid
 flowchart TD
 
-  %% =========================
   %% INPUT LAYER
-  %% =========================
   A((Child Interaction))
   A --> A1[Selections<br/>Hero • Place • Feeling • Severity]
 
-  %% =========================
   %% DECISION LAYER
-  %% =========================
   A1 --> B{Frontend Decision Core}
 
-  %% =========================
   %% STATE FORMATION
-  %% =========================
   B --> C[Structured Episode State<br/>Local UI JSON]
 
-  %% =========================
   %% HIDDEN FRONTEND LOGIC
-  %% =========================
   subgraph HIDDEN[Hidden Frontend Layer]
     direction TB
     C --> D[Hero–Place Mapping Matrix]
@@ -43,19 +44,15 @@ flowchart TD
     E --> F[Support Rule Resolver<br/>Default vs Guided]
   end
 
-  %% =========================
   %% OUTPUT RENDERING
-  %% =========================
   F --> G[Visual Support Rendering<br/>Images • Tone • Text]
   F --> H[Scenario & Symptom UI]
 
-  %% =========================
   %% DISPLAY & FEEDBACK
-  %% =========================
   G --> I[App Interface]
   H --> I
-
   I --> J[Analytics View<br/>Emotion Frequency • Parent Response]
+
 
 
 
@@ -645,5 +642,6 @@ safety and consistency metrics
 child-friendly subjective feedback protocols
 
 measurable reduction in anxiety / improved reporting reliability
+
 
 
