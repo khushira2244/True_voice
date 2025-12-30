@@ -1,468 +1,127 @@
+🧠 True Voice
+
+True Voice is a child-first, visual communication system designed to help autistic and non-verbal children express discomfort, pain, or emotional distress without relying on verbal explanation.
+
+Instead of asking children to describe how they feel, the system guides them through a calm, step-by-step visual flow using familiar heroes, places, and simple choices — while keeping parents fully involved in review, safety, and support decisions.
+
+The design prioritizes emotional safety, predictability, and human-in-the-loop control.
+
 🔗 Live Demo
 
-Demo URL:
-👉 https://truevoicemoment.netlify.app
+Demo URL
+👉 https://truevoicemoment.netlify.app/
 
-🔐 Demo Login Credentials
+Demo Credentials
 
 Email: demo@gmail.com
-
 Password: demo123
 
-These credentials are provided for demo and evaluation purposes only.
 
+For judging and evaluation, the demo runs in a stable mode using pre-generated support images to ensure consistent UX and avoid dependency on live generation credits.
 
+🔄 End-to-End System Flow
 
+<img width="3914" height="14717" alt="flow_design" src="https://github.com/user-attachments/assets/346ac685-684b-4b52-a83c-57beb2b194cb" />
 
-Mermaid requires **clean, line-by-line graph definitions**.
+Flow overview:
 
----
+Parents provide child details, favorite heroes, and familiar places
 
-## ✅ The ONLY correct README-safe version (copy-paste)
+Children interact through a guided visual flow (hero → place → symptom → severity)
 
-Use **exactly this**, no edits:
+Unknown places are safely suggested using an LLM and filtered
 
-````md
-```mermaid
-flowchart TD
+Emergency paths trigger immediate alerts to parents
 
-  %% INPUT LAYER
-  A((Child Interaction))
-  A --> A1[Selections<br/>Hero • Place • Feeling • Severity]
+Parent verification gates any custom support generation
 
-  %% DECISION LAYER
-  A1 --> B{Frontend Decision Core}
+Past episodes and parent decisions improve future guidance
 
-  %% STATE FORMATION
-  B --> C[Structured Episode State<br/>Local UI JSON]
+Analytics summarize child discomfort patterns and parent involvement
 
-  %% HIDDEN FRONTEND LOGIC
-  subgraph HIDDEN[Hidden Frontend Layer]
-    direction TB
-    C --> D[Hero–Place Mapping Matrix]
-    D --> E[Previous Episode Pattern Check]
-    E --> F[Support Rule Resolver<br/>Default vs Guided]
-  end
+This flow ensures safety, caregiver oversight, and long-term learning.
 
-  %% OUTPUT RENDERING
-  F --> G[Visual Support Rendering<br/>Images • Tone • Text]
-  F --> H[Scenario & Symptom UI]
+🧩 Product Description (FIBO-Based Design)
 
-  %% DISPLAY & FEEDBACK
-  G --> I[App Interface]
-  H --> I
-  I --> J[Analytics View<br/>Emotion Frequency • Parent Response]
+True Voice uses FIBO as its core image-generation system for emotional support and sympathy visuals.
 
+Key principles:
 
+Support images are generated using structured prompting
 
+Visual variation is intentionally limited to reduce sensory overload
 
+Images are reused deterministically for familiarity and emotional safety
 
+Parents remain in control of any custom support generation
 
-🎬 Opening lines (before starting the demo)
+AI assists the interaction — it never replaces parental judgment.
 
-“Before I start the live walkthrough, I’d strongly recommend watching this short demo video first.
-It explains the complete end-to-end flow of the application in a stable demo mode, including the sympathy image generation logic, which is an important part of the system design.
+▶️ Running the Project Locally
 
-This video will give you the full context of how the app works, so the live demo will feel much clearer and easier to follow.”
+The project consists of a backend and a frontend.
 
-🔗 Mention the Drive video (judges-only)
+🔐 Backend Setup
+Backend Environment Validation
 
-“I’ve shared the full demo video via Google Drive for judges.
-The reason it’s on Drive is to keep the experience consistent, fast, and free from generation delays or randomness during evaluation.”
+The backend includes a built-in environment validation layer (already implemented in the repository).
+Required environment variables are checked at startup and the server fails fast if configuration is missing.
 
-You can show or paste:
+No additional setup is required beyond creating the .env file below.
 
-Google Drive Demo (Judges Only):
-👉 https://drive.google.com/file/d/1MD6ALJ6idcGIQtyLmoC9HbVV1YLlvK4M/view
+Required .env file
 
-🎨 Clarify sympathy image generation (important framing)
+Create a .env file in the backend root:
 
-“This video also includes the sympathy image generation flow.
-During judging, images are pre-generated using structured prompts to ensure deterministic results, fast UX, and no dependency on live credits — while the backend already supports dynamic generation using the same prompt structure.”
-
-This reassures judges you made a deliberate engineering choice, not a shortcut.
-
-
-🤖 Image Generation During Judging (Stable Demo Mode)
-
-All images used in this project were generated using FIBO via Postman and then saved as static image URLs inside the frontend mapping.
-
-For judging, the frontend intentionally uses these pre-generated FIBO images to ensure:
-
-✅ consistent outputs (no randomness during evaluation)
-
-✅ fast UX (no waiting for generation)
-
-✅ no dependency on live credit usage during judging
-
-The backend already supports dynamic FIBO generation using the same prompt structure and safety rules, and can be enabled after judging if needed.
-
-
-🔧 Post-Judging Mode (Dynamic Generation)
-
-After judging, the backend can be configured to generate new support images dynamically using the same prompt structure and safety rules.
-
-This does not require any frontend rewrite — only enabling the backend keys and calling the existing endpoint.
-
-
-
-Installation & Running the Project and   only made for screen size (1440px to tab mode(768px))
-
-This project has two parts:
-
-Backend (Node + Express) → required for login + token-protected APIs
-
-Frontend (React + Vite) → UI flow for kids + guardian
-
-1️ Install & Start Backend
-
-Open terminal:
-
-cd fibo-backend/fibo-backend
-npm install
-🔐 Backend Environment Variables (Required)
-
-The backend will not start properly unless all required environment variables are defined.
-
-Create the file:
-
-fibo-backend/fibo-backend/.env
-
-
-Add the following functions and constants:
-
-
-1."import dotenv from 'dotenv';
-
-dotenv.config();
-
-function requireEnv(name) {
-    const value = process.env[name]
-    if(!value){
-        throw new Error(`Environment variables ${name} is required but not set.`)
-
-    }
-    return value
-}
-"
-# ===============================
-# Core Server Configuration
-# ===============================
 NODE_ENV=development
 PORT=5000
 
-# ===============================
-# Authentication (Demo Mode)
-# ===============================
 JWT_SECRET=demo_jwt_secret
 DEMO_PASSWORD=demo123
 
-# ===============================
-# AI / Image Generation (Demo Safe)
-# ===============================
-# Real keys are NOT required for judging
 FAL_KEY=demo_key
 OPENAI_API_KEY=demo_key
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_API_STYLE=chat
-
-# (Optional – only if using Gemini instead of OpenAI)
 GOOGLE_API_KEY=demo_key
 
-# ===============================
-# Weather / Location Defaults
-# ===============================
-WEATHER_LAT=28.6139
-WEATHER_LON=77.2090
 
-🔑 Important Notes for Judges
+⚠️ All variables above are required.
+For judging and local evaluation, placeholder values (demo_key) are sufficient.
 
-✅ All values above are demo-safe
-
-✅ Backend will start successfully with these values
-
-✅ Login + auth token flow works with DEMO_PASSWORD=demo123
-
-❌ Real API keys are needed only if regenerating images
-
-For demo evaluation, support images are pre-generated and reused, so real keys are not required.
-
-The backend must start for login + auth token flow.
-
-Login does NOT need real keys, so demo_key is fine.
-
-Real keys are only needed if you want to regenerate images using FIBO.
-
- For judging/demo: pre-generated support images are already mapped in frontend, so real keys are optional.
-
-▶️ Start Backend Server
+Start Backend
+cd fibo-backend/fibo-backend
+npm install
 npm run dev
 
 
-Backend runs on:
+Backend runs at:
 
 http://localhost:5000
 
-2️⃣ Install & Start Frontend (Required)
-
-Before starting the frontend, you must configure the environment file.
-
-📄 Create Frontend .env
-
-Create the file:
-
-fibo-frontend/.env
-
-
-Add the following:
-
-VITE_API_BASE=http://localhost:5000
-
-
-This tells the frontend where the backend API is running.
-
-▶️ Install & Run Frontend
-
-Open a new terminal:
-
+🖥️ Frontend Setup
 cd fibo-frontend
 npm install
 npm run dev
+
+
+Create .env in frontend root:
+
+VITE_API_BASE=http://localhost:5000
 
 
 Frontend runs at:
 
 http://localhost:5173
 
-⚠️ Important Note
 
-Backend must be running before starting the frontend
+Backend must be running before starting the frontend.
 
-Otherwise login and protected API calls will fail
- Demo Login (Required)
+🌱 Future Implementation & Research Direction
 
-Login is required to get an auth token (protected routes).
+True Voice is intentionally designed as a foundational system that can evolve carefully without compromising emotional safety or caregiver trust.
 
-Use:
+🔐 Guardian Verification & Trust Layers
 
-Email: any valid email (example: demo@test.com)
-
-Password: demo123
-
- Auth is intentionally simplified for hackathon evaluation.
-
-✅ Quick Troubleshooting
-If login fails
-
-Make sure backend is running on http://localhost:5000
-
-Make sure .env exists in backend folder
-
-Use password exactly: demo123
-
-If image generation fails
-
-That’s expected if you used demo_key
-
-Demo still works because support images are pre-generated and mapped in frontend
-
-Add real FAL_KEY if you want to regenerate images
-
-Demo Walkthrough (Video)
-
-👉 Demo Video:
-https://www.youtube.com/watch?v=Supej1h4ueY
-
-This video demonstrates:
-
-Complete end-to-end child flow
-
-Hero-based interaction
-
-Scenario, symptom, and severity selection
-
-Support / sympathy image experience
-
-Guardian-attended flow
-
-Local episode persistence (demo mode)
-
- The demo uses pre-generated support images to ensure consistent, safe visuals during evaluation.
-
-🧩 Product Discussion
-What Problem Does TrueVoice Solve?
-
-Many children—especially autistic or non-verbal children—struggle to communicate physical discomfort or pain using words.
-
-Common challenges include:
-
-Difficulty naming pain
-
-Anxiety during questioning
-
-Sensory overload
-
-Reliance on adult interpretation
-
-Traditional systems depend on verbal explanation, text input, or medical terminology, which can be overwhelming or inaccessible.
-
-How TrueVoice Approaches the Problem
-
-TrueVoice replaces explanation with guided visual choice.
-
-Instead of asking children to describe pain, the system allows them to:
-
-Choose a hero they feel safe with
-
-Select where they are (home, school, outside)
-
-Indicate what hurts
-
-Indicate how severe it feels
-
-This transforms pain expression into a calm, step-by-step interaction, reducing stress and ambiguity.
-
- Emotional Support Layer (Key Product Feature)
-
-After a child completes an episode, TrueVoice introduces a Support / Sympathy stage.
-
-This stage:
-
-Acknowledges the child’s discomfort emotionally
-
-Shows a calm, reassuring support image
-
-Helps the child feel seen and safe, not rushed
-
-For autistic children, emotional validation is as important as symptom identification.
-
- How Support Images Are Designed (Important)
-
-TrueVoice intentionally limits image variation.
-
-Design Choice:
-
-One support image per child + location
-
-Same image reused across multiple symptoms
-
-Why this matters:
-
-Reduces visual overload
-
-Builds familiarity and emotional safety
-
-Prevents anxiety caused by constantly changing visuals
-
-This is a child-first UX decision, not a technical shortcut.
-
- How FIBO Is Used (AI Strategy)
-
-FIBO is used sparingly and intentionally.
-
-In the current demo:
-
-Images are generated once per:
-
-child + location + severity
-
-
-Total images generated:
-
-AVA: School, Home, Outside → 3 images
-
-LEO: School, Home, Outside → 3 images
-
-Total: 6 AI image generations
-
-All subsequent episodes reuse these images via deterministic keys.
-
- How This Scales in the Future
-
-TrueVoice is designed to scale without exploding AI usage.
-
-Scaling dimensions:
-
-More children → +3 images per child
-
-More locations → +1 image per location per child
-
-More symptoms → no new images required
-
-This keeps:
-
-AI cost low
-
-UX consistent
-
-System predictable and safe
-
- Responsible AI Design
-
-TrueVoice follows responsible AI principles:
-
-No AI calls per user click
-
-No text rendered inside images
-
-Guardian messaging separated from image prompting
-
-Deterministic reuse instead of uncontrolled generation
-
-This makes the system suitable for sensitive, child-centered contexts.
-
-🌱 Future Scope & Product Evolution
-
-TrueVoice is intentionally built as a foundational system.
-The current version demonstrates the core interaction model, while leaving space for careful, responsible expansion.
-
-👶 Child & Guardian Profile Expansion
-
-In future versions:
-
-Guardian profiles will define:
-
-Where the child usually goes (school, therapy, playground, transport, etc.)
-
-Trusted caregivers (parents, teachers, helpers)
-
-The available scenarios presented to the child will be context-aware, based on guardian-provided inputs.
-
-If an unfamiliar situation occurs:
-
-The system can infer or suggest scenarios using an LLM
-
-Always with guardian confirmation, never automatically.
-
-This ensures flexibility without removing parental control.
-
-🧠 Symptom Vocabulary Expansion (Community-Guided)
-
-The current demo includes a limited symptom set to maintain clarity.
-
-In the future:
-
-Symptom categories can be expanded using:
-
-Autism community guidelines
-
-Pediatric care standards
-
-Therapist and caregiver feedback
-
-Symptoms will remain simple, visual, and non-clinical, even as coverage grows.
-
-The goal is inclusivity, not medical diagnosis.
-
-🔐 Attendance & Guardian Verification
-
-Currently:
-
-Episode attendance is marked using guardian name + email (demo mode)
-
-In future versions:
-
-Guardian actions can be protected using:
+Future versions may include:
 
 Multi-factor authentication (MFA)
 
@@ -470,68 +129,58 @@ Verified caregiver roles (parent, teacher, therapist)
 
 This enables trusted tracking while respecting privacy boundaries.
 
-🎨 From Sympathy Images to Storytelling
+🎨 From Sympathy Images to Visual Storytelling
 
-The current support image is a single-frame emotional acknowledgment.
+The current system uses a single-frame support image as emotional acknowledgment.
 
 Future evolution may include:
 
 Multi-frame visual storytelling
 
-Gentle narrative progression (beginning → support → calm)
+Gentle narrative progression (support → calm)
 
 Visual continuity across episodes
 
-This opens the door to:
+This can support deeper emotional processing for children and clearer insight for caregivers.
 
-Better emotional processing for children
+📊 Emotion & Episode Tracking (Opt-In)
 
-Clearer insight for caregivers and teachers
+With explicit consent and safeguards:
 
-📊 Emotion & Episode Tracking (Optional, Opt-In)
-
-With proper consent and safeguards:
-
-Episodes can be analyzed over time to identify:
+Episodes may be analyzed over time to identify:
 
 Recurring discomfort patterns
 
 Environment-specific triggers
 
-This data can support caregivers and educators — not replace them.
+This data is intended to support caregivers and educators, not replace human judgment.
 
 🤖 Adaptive Image Generation Precision
 
-In the future, image generation can become layered and adaptive:
+Future image generation may become emotionally adaptive:
 
-More precision for:
+Increased precision for emotional tone and environment familiarity
 
-Emotional tone
+Reduced variation when consistency is required
 
-Environment familiarity
+Increased detail only when clarity and guidance benefit the child
 
-Caregiver presence
-
-Fewer visual changes when consistency is needed
-
-More detail when guidance and clarity are beneficial
-
-This allows the system to scale emotionally, not just technically.
+The goal is emotional scalability, not visual novelty.
 
 🌍 A New Category of Application
 
-TrueVoice represents an early step toward a new class of applications:
+True Voice represents an early step toward a new class of systems:
 
-Systems that translate emotion into structured, interpretable signals — without forcing language.
+Applications that translate emotion into structured, interpretable signals — without forcing language.
 
-It is designed not as a medical tool, but as a bridge between children, caregivers, and understanding.
+It is not a medical tool, but a bridge between children, caregivers, and understanding.
 
 🔬 Research-Oriented Framing (Future Research Direction)
 
-TrueVoice can be viewed as more than a UI prototype — it is an early demonstration of a research direction:
-how to build child-safe, non-verbal communication systems that translate subjective discomfort into structured, interpretable signals.
+True Voice can be viewed as an early demonstration of a broader research direction:
+designing child-safe, non-verbal communication systems that convert subjective discomfort into structured signals.
 
-This creates a bridge between:
+This connects:
 
 Human-centered interaction design
 
@@ -541,106 +190,70 @@ Accessible AI
 
 Trustworthy, constrained generative systems
 
-1) Non-Verbal Expression as a Structured Signal
+1️⃣ Non-Verbal Expression as a Structured Signal
 
-A core research idea behind TrueVoice is:
+Selections (hero → place → symptom → severity) can be treated as structured observations, enabling:
 
-A child’s selections (hero → place → symptom → severity) can be treated as a structured observation, not free text.
+Interpretable episodic state modeling
 
-This allows future work in:
+Uncertainty-aware reasoning over incomplete inputs
 
-robust representation learning for non-verbal user input
+2️⃣ Emotion-Safe Generative AI
 
-mapping episodic selections to interpretable “state snapshots”
+True Voice follows constrained generation:
 
-uncertainty-aware reasoning over incomplete or noisy choices
+No arbitrary generation
 
-2) Emotion-Safe Generative AI (Constrained Generation)
+Bounded prompts with caregiver guidance
 
-TrueVoice uses a constrained generation strategy:
+Intentional reuse to reduce variability
 
-the model is never asked to generate arbitrary content
+Research question:
 
-prompts are bounded by safe style, environment constraints, and caregiver guidance
+How can generative systems balance expressiveness with psychological safety?
 
-output images are reused intentionally to reduce variability
+3️⃣ Personalization Without Overstimulation
 
-This leads to a research question:
+Precision should increase only when it improves clarity without increasing distress.
 
-How do we design generative systems with bounded variability that prioritize psychological safety and predictability?
+Future research may explore:
+
+Safe baseline visuals
+
+Gradual personalization under caregiver control
+
+Scenario-grounded generation to avoid hallucinated context
+
+4️⃣ Longitudinal Episode Modeling (Privacy-Preserving)
+
+With opt-in consent:
+
+Episodes may support longitudinal pattern discovery
+
+Caregiver decision support (not diagnosis)
+
+Research directions include privacy-preserving storage and explainable trend views.
+
+5️⃣ Human-in-the-Loop Verification
+
+True Voice enforces:
+
+Caregiver-defined boundaries
+
+Role-based verification
+
+AI suggestions without override authority
+
+6️⃣ Toward a New Benchmark Category
+
+True Voice hints at a future benchmark:
+
+Emotion-safe multimodal support generation under constrained inputs
 
 Potential evaluation dimensions:
 
-visual consistency vs emotional effectiveness
+Safety and consistency metrics
 
-cognitive load reduction for autistic children
+Child-friendly feedback protocols
 
-safety constraint compliance under prompt variability
-
-3) Personalization Without Overstimulation (Adaptive Precision)
-
-Instead of “more personalization = better,” TrueVoice motivates a different idea:
-
-Precision should be increased only when it improves clarity without increasing distress.
-
-Future research can explore adaptive layers:
-
-low-variation “safe baseline visuals”
-
-gradual personalization controlled by guardian and therapist feedback
-
-scenario-specific visual grounding to avoid hallucinated context
-
-4) Longitudinal Episode Modeling (Opt-In, Privacy-Preserving)
-
-With consent and safeguards, episodes can become a longitudinal dataset for:
-
-pattern discovery (time/location recurrence)
-
-trigger hypothesis generation (environment-linked distress)
-
-caregiver/teacher decision support (not diagnosis)
-
-Research direction:
-
-privacy-preserving storage and summarization of child episodes
-
-bias-aware interpretation (avoid overfitting assumptions)
-
-explainable trend views suitable for caregivers
-
-5) Human-in-the-Loop Safety and Verification
-
-TrueVoice is naturally aligned with human-in-the-loop AI:
-
-guardians define scenario boundaries
-
-teachers/therapists may validate symptom expansions
-
-AI can suggest, but never override caregiver confirmation
-
-This enables research into:
-
-safe interaction protocols
-
-caregiver-verifiable personalization
-
-role-based control (parent vs teacher vs clinician)
-
-6) A New Benchmark Category
-
-TrueVoice hints at a broader research benchmark:
-
-“Emotion-safe multimodal support generation under constrained inputs.”
-
-Future research could define:
-
-small controlled prompt sets
-
-safety and consistency metrics
-
-child-friendly subjective feedback protocols
-
-measurable reduction in anxiety / improved reporting reliability
-
-
+Reduced anxiety and improved reporting reliability
