@@ -23,55 +23,60 @@ For **judging and evaluation**, the demo runs in a **stable mode** using **pre-g
 
 <img width="3914" height="14717" alt="flow_design" src="https://github.com/user-attachments/assets/346ac685-684b-4b52-a83c-57beb2b194cb" />
 
-Flow overview:
 
-Parents provide child details, favorite heroes, and familiar places
+# Flow Overview
 
-Children interact through a guided visual flow (hero → place → symptom → severity)
+Parents provide **child details**, **favorite heroes**, and **familiar places**.
 
-Unknown places are safely suggested using an LLM and filtered
+Children interact through a **guided visual flow** that progresses step by step:
+**hero → place → symptom → severity**, without requiring verbal explanation.
 
-Emergency paths trigger immediate alerts to parents
+If a selected place is unfamiliar, **safe alternatives are suggested** through controlled generation and filtering.
 
-Parent verification gates any custom support generation
+When an **emergency** is detected, the system triggers **immediate alerts to parents** and generates an automatic SOS support image.
 
-Past episodes and parent decisions improve future guidance
+All **custom support image generation is gated by parent verification**, ensuring caregiver control at the right moment.
 
-Analytics summarize child discomfort patterns and parent involvement
+Over time, **past episodes and parent decisions** improve future guidance.
 
-This flow ensures safety, caregiver oversight, and long-term learning.
+An **analytics layer** summarizes **child discomfort patterns** and **parent involvement**.
 
-🧩 Product Description (FIBO-Based Design)
+This flow ensures **emotional safety**, **caregiver oversight**, and **long-term learning**.
 
-True Voice uses FIBO as its core image-generation system for emotional support and sympathy visuals.
+---
 
-Key principles:
+# 🧩 Product Description (FIBO-Based Design)
 
-Support images are generated using structured prompting
+True Voice uses **FIBO** as its core image-generation system for **emotional support and sympathy visuals**.
 
-Visual variation is intentionally limited to reduce sensory overload
+## Key Principles
 
-Images are reused deterministically for familiarity and emotional safety
+- **Support images are generated using structured prompting**
+- **Visual variation is intentionally limited** to reduce sensory overload
+- **Images are reused deterministically** to ensure familiarity and emotional safety
+- **Parents remain in control** of any custom support generation
+- **AI assists the interaction** — it never replaces parental judgment
 
-Parents remain in control of any custom support generation
+---
 
-AI assists the interaction — it never replaces parental judgment.
+# ▶️ Running the Project Locally
 
-▶️ Running the Project Locally
+The project consists of a **backend** and a **frontend**.
 
-The project consists of a backend and a frontend.
+## 🔐 Backend Setup
 
-🔐 Backend Setup
-Backend Environment Validation
+### Backend Environment Validation
 
-The backend includes a built-in environment validation layer (already implemented in the repository).
-Required environment variables are checked at startup and the server fails fast if configuration is missing.
+The backend includes a **built-in environment validation layer**.  
+Required environment variables are checked at startup, and the server fails fast if configuration is missing.
 
-No additional setup is required beyond creating the .env file below.
+No additional setup is required beyond creating the `.env` file.
 
-Required .env file
+### Required `.env` File
 
-Create a .env file in the backend root:
+Create a `.env` file in the backend root:
+
+** Add below Variable Key and Value Pair **
 
 NODE_ENV=development
 PORT=5000
@@ -84,10 +89,13 @@ OPENAI_API_KEY=demo_key
 GOOGLE_API_KEY=demo_key
 
 
-⚠️ All variables above are required.
-For judging and local evaluation, placeholder values (demo_key) are sufficient.
+⚠️ All variables above are required.  
+For judging and local evaluation, placeholder values (`demo_key`) are sufficient.
 
-Start Backend
+### Start Backend
+
+
+
 cd fibo-backend/fibo-backend
 npm install
 npm run dev
@@ -95,167 +103,104 @@ npm run dev
 
 Backend runs at:
 
+
+
 http://localhost:5000
 
-🖥️ Frontend Setup
+
+---
+
+## 🖥️ Frontend Setup
+
+
+
 cd fibo-frontend
 npm install
 npm run dev
 
 
-Create .env in frontend root:
+Create a `.env` file in the frontend root:
+
+
 
 VITE_API_BASE=http://localhost:5000
 
 
 Frontend runs at:
 
+
+
 http://localhost:5173
 
 
-Backend must be running before starting the frontend.
+⚠️ Backend must be running before starting the frontend.
 
-🌱 Future Implementation & Research Direction
+---
 
-True Voice is intentionally designed as a foundational system that can evolve carefully without compromising emotional safety or caregiver trust.
+# 🌱 Future Implementation & Research Direction
 
-🔐 Guardian Verification & Trust Layers
+True Voice is intentionally designed as a **foundational system** that can evolve carefully without compromising **emotional safety** or **caregiver trust**.
+
+## 🔐 Guardian Verification & Trust Layers
 
 Future versions may include:
 
-Multi-factor authentication (MFA)
-
-Verified caregiver roles (parent, teacher, therapist)
+- **Multi-factor authentication (MFA)**
+- **Verified caregiver roles** (parent, teacher, therapist)
 
 This enables trusted tracking while respecting privacy boundaries.
 
-🎨 From Sympathy Images to Visual Storytelling
+## 🎨 From Sympathy Images to Visual Storytelling
 
-The current system uses a single-frame support image as emotional acknowledgment.
+The current system uses a **single-frame support image** as emotional acknowledgment.
 
 Future evolution may include:
 
-Multi-frame visual storytelling
+- **Multi-frame visual storytelling**
+- **Gentle narrative progression** (support → calm)
+- **Visual continuity across episodes**
 
-Gentle narrative progression (support → calm)
-
-Visual continuity across episodes
-
-This can support deeper emotional processing for children and clearer insight for caregivers.
-
-📊 Emotion & Episode Tracking (Opt-In)
+## 📊 Emotion & Episode Tracking (Opt-In)
 
 With explicit consent and safeguards:
 
-Episodes may be analyzed over time to identify:
+- Episodes may be analyzed to identify **recurring discomfort patterns**
+- Environment-specific triggers may be surfaced
 
-Recurring discomfort patterns
+This data is designed to **support caregivers**, not replace human judgment.
 
-Environment-specific triggers
+## 🤖 Adaptive Image Generation Precision
 
-This data is intended to support caregivers and educators, not replace human judgment.
+Future image generation may become more emotionally adaptive:
 
-🤖 Adaptive Image Generation Precision
+- Increased precision for emotional tone
+- Reduced variation when consistency is required
+- Added detail only when clarity benefits the child
 
-Future image generation may become emotionally adaptive:
+The goal is **emotional scalability**, not visual novelty.
 
-Increased precision for emotional tone and environment familiarity
-
-Reduced variation when consistency is required
-
-Increased detail only when clarity and guidance benefit the child
-
-The goal is emotional scalability, not visual novelty.
-
-🌍 A New Category of Application
+## 🌍 A New Category of Application
 
 True Voice represents an early step toward a new class of systems:
 
-Applications that translate emotion into structured, interpretable signals — without forcing language.
+> Applications that translate emotion into structured, interpretable signals — without forcing language.
 
-It is not a medical tool, but a bridge between children, caregivers, and understanding.
+It is **not a medical tool**, but a bridge between **children**, **caregivers**, and **understanding**.
 
-🔬 Research-Oriented Framing (Future Research Direction)
+---
+
+# 🔬 Research-Oriented Framing
 
 True Voice can be viewed as an early demonstration of a broader research direction:
-designing child-safe, non-verbal communication systems that convert subjective discomfort into structured signals.
+designing **child-safe, non-verbal communication systems** that convert subjective discomfort into structured signals.
 
-This connects:
+### Research Threads
 
-Human-centered interaction design
-
-Affective computing
-
-Accessible AI
-
-Trustworthy, constrained generative systems
-
-1️⃣ Non-Verbal Expression as a Structured Signal
-
-Selections (hero → place → symptom → severity) can be treated as structured observations, enabling:
-
-Interpretable episodic state modeling
-
-Uncertainty-aware reasoning over incomplete inputs
-
-2️⃣ Emotion-Safe Generative AI
-
-True Voice follows constrained generation:
-
-No arbitrary generation
-
-Bounded prompts with caregiver guidance
-
-Intentional reuse to reduce variability
-
-Research question:
-
-How can generative systems balance expressiveness with psychological safety?
-
-3️⃣ Personalization Without Overstimulation
-
-Precision should increase only when it improves clarity without increasing distress.
-
-Future research may explore:
-
-Safe baseline visuals
-
-Gradual personalization under caregiver control
-
-Scenario-grounded generation to avoid hallucinated context
-
-4️⃣ Longitudinal Episode Modeling (Privacy-Preserving)
-
-With opt-in consent:
-
-Episodes may support longitudinal pattern discovery
-
-Caregiver decision support (not diagnosis)
-
-Research directions include privacy-preserving storage and explainable trend views.
-
-5️⃣ Human-in-the-Loop Verification
-
-True Voice enforces:
-
-Caregiver-defined boundaries
-
-Role-based verification
-
-AI suggestions without override authority
-
-6️⃣ Toward a New Benchmark Category
-
-True Voice hints at a future benchmark:
-
-Emotion-safe multimodal support generation under constrained inputs
-
-Potential evaluation dimensions:
-
-Safety and consistency metrics
-
-Child-friendly feedback protocols
-
-Reduced anxiety and improved reporting reliability
+1. **Non-verbal expression as a structured signal**
+2. **Emotion-safe generative AI**
+3. **Personalization without overstimulation**
+4. **Privacy-preserving longitudinal modeling**
+5. **Human-in-the-loop verification**
+6. **Toward a new benchmark category for emotion-safe AI**
 
 
