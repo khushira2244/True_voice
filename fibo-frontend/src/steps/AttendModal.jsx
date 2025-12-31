@@ -28,8 +28,6 @@ export default function AttendModal({
   onClose,
   onSubmit,
 
-  // ✅ NEW: forwarded from App.jsx so SupportImagePanel can live-update header
-  // Pass setHeaderOverride as this prop.
   onHeaderChange,
 }) {
   const [stage, setStage] = useState("attend"); // "attend" | "support"
@@ -46,6 +44,15 @@ export default function AttendModal({
   const [otherRel, setOtherRel] = useState("");
 
   const [err, setErr] = useState("");
+
+  // ✅ Step A — allow support image ONLY for non-emergency + severe
+  const allowSupportStage = useMemo(() => {
+    const symptomId = scenarioMeta?.symptomId;
+    const severityId = scenarioMeta?.severityId;
+
+    // Allow support image ONLY for non-emergency + severe
+    return symptomId !== "emergency" && severityId === "severe";
+  }, [scenarioMeta?.symptomId, scenarioMeta?.severityId]);
 
   // reset on open
   useEffect(() => {
@@ -102,7 +109,20 @@ export default function AttendModal({
     return "";
   }
 
-  // Step 1 confirm → move to Support step
+  // ✅ central finish helper: parent always gets consistent payload
+  function finish(attendedBy, supportPayloadOrNull = null) {
+    onHeaderChange?.(null);
+
+    onSubmit?.({
+      attended: true,
+      attendedBy,
+      support: supportPayloadOrNull
+        ? { ...supportPayloadOrNull, createdAt: new Date().toISOString() }
+        : null,
+    });
+  }
+
+  // ✅ Step B — Step 1 confirm → skip or move to Support step
   function handleConfirmAttended() {
     const msg = validate();
     if (msg) {
@@ -120,25 +140,21 @@ export default function AttendModal({
 
     setAttendedByDraft(attendedBy);
 
-    // ✅ when we enter support step, show default header text (until user types)
-    onHeaderChange?.("We are here For You");
+    // ✅ SKIP support stage for emergency or mild
+    if (!allowSupportStage) {
+      onHeaderChange?.(null);
+      onSubmit?.({
+        attended: true,
+        attendedBy,
+        support: null,
+      });
+      return;
+    }
 
+    // ✅ Only severe + non-emergency reaches here
+    onHeaderChange?.("We are here For You");
     setStage("support");
   }
-
-  // ✅ central finish helper: parent always gets consistent payload
-  function finish(supportPayloadOrNull = null) {
--  onHeaderChange?.(null);
-
-  onSubmit?.({
-    attended: true,
-    attendedBy: attendedByDraft,
-    support: supportPayloadOrNull
-      ? { ...supportPayloadOrNull, createdAt: new Date().toISOString() }
-      : null,
-  });
-}
-
 
   if (!open) return null;
 
@@ -149,21 +165,16 @@ export default function AttendModal({
         scenarioMeta={scenarioMeta}
         attendedBy={attendedByDraft}
         initialMessage=""
-
-        // ✅ NEW: push header text live while typing
         onHeaderChange={onHeaderChange}
-        // (SupportImagePanel will call onHeaderChange(val) on input change)
-
         onBack={() => {
           onHeaderChange?.(null);
           setStage("attend");
         }}
-        onSkip={() => finish(null)}
-        onDone={(supportPayload) => {
-          // SupportImagePanel can call onDone() with or without payload
-          // If it returns nothing, treat as "no support"
-          finish(supportPayload || null);
-        }}
+        // ✅ Step 4 — always pass attendedBy into finish()
+        onSkip={() => finish(attendedByDraft, null)}
+        onDone={(supportPayload) =>
+          finish(attendedByDraft, supportPayload || null)
+        }
       />,
       document.body
     );
@@ -365,39 +376,29 @@ export default function AttendModal({
         }
         .tv-field{display:flex; flex-direction:column; gap:6px;}
         .tv-label{font-weight:800; color:#0f172a;}
-       .tv-input{
-  height:44px;
-  border-radius:12px;
-  border:1px solid rgba(0,0,0,.14);
-  padding:0 12px;
-
-
-  background-color:#dadee8 !important;
-  color:#0f172a;
-
-  outline:none;
-
-
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-
-.tv-input:focus,
-.tv-input:active,
-.tv-input:focus-visible{
-  background-color:#dadee8 !important;
-  color:#0f172a;
-  border-color: rgba(0,0,0,.35);
-  outline:none;
-  box-shadow:none;
-}
-
-/* placeholder */
-.tv-input::placeholder{
-  color: rgba(15,23,42,.55);
-}
-
+        .tv-input{
+          height:44px;
+          border-radius:12px;
+          border:1px solid rgba(0,0,0,.14);
+          padding:0 12px;
+          background-color:#dadee8 !important;
+          color:#0f172a;
+          outline:none;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+        .tv-input:focus,
+        .tv-input:active,
+        .tv-input:focus-visible{
+          background-color:#dadee8 !important;
+          color:#0f172a;
+          border-color: rgba(0,0,0,.35);
+          outline:none;
+          box-shadow:none;
+        }
+        .tv-input::placeholder{
+          color: rgba(15,23,42,.55);
+        }
         .tv-hint{font-size:12px; opacity:.72; margin-top:-4px;}
         .tv-error{
           background:rgba(255,0,0,.08);
