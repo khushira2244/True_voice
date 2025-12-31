@@ -1,3 +1,12 @@
+## 🔗 Live Demo
+** Intro Video:- https://www.youtube.com/watch?v=2oXbinAgXJY
+**Demo URL 👉** https://truevoicemoment.netlify.app/
+** How to run the Application :- https://youtu.be/Supej1h4ueY
+
+
+
+
+
 ## 🧠 True Voice
 
 **True Voice** is a **child-first, visual communication system** designed to help **autistic and non-verbal children** express **discomfort, pain, or emotional distress** without relying on **verbal explanation**.
@@ -8,9 +17,7 @@ The design prioritizes **emotional safety**, **predictability**, and **human-in-
 
 ---
 
-## 🔗 Live Demo
 
-**Demo URL 👉** https://truevoicemoment.netlify.app/
 
 ### Demo Credentials
 
@@ -301,6 +308,7 @@ designing **child-safe, non-verbal communication systems** that convert subjecti
 4. **Privacy-preserving longitudinal modeling**
 5. **Human-in-the-loop verification**
 6. **Toward a new benchmark category for emotion-safe AI**
+
 
 
 
