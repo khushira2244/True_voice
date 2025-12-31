@@ -76,78 +76,46 @@ export const SUPPORT_IMAGE_MAP = {
   // ======================
   // AVA — SCHOOL (SEVERE)
   // ======================
-  "ava_child__school__head__severe":
-    "https://v3b.fal.media/files/b/0a87f965/XHXNQeUKU_gJn3PQ0yVt6_cb2a00d712234755a5bfd81f58440bf7.png",
-
-  "ava_child__school__stomach__severe":
-    "https://v3b.fal.media/files/b/0a87f965/XHXNQeUKU_gJn3PQ0yVt6_cb2a00d712234755a5bfd81f58440bf7.png",
-
-  "ava_child__school__chest__severe":
-    "https://v3b.fal.media/files/b/0a87f965/XHXNQeUKU_gJn3PQ0yVt6_cb2a00d712234755a5bfd81f58440bf7.png",
+  "ava_child__school__head__severe": "/support/ava_school_sympathy.png",
+  "ava_child__school__stomach__severe": "/support/ava_school_sympathy.png",
+  "ava_child__school__chest__severe": "/support/ava_school_sympathy.png",
 
   // ======================
   // AVA — HOME (SEVERE)
   // ======================
-  "ava_child__home__head__severe":
-    "https://v3b.fal.media/files/b/0a87f98a/HG7I9pru4aYCDkgqv4294_ee1a2c7e601c488a89a572edebea56d9.png",
-
-  "ava_child__home__stomach__severe":
-    "https://v3b.fal.media/files/b/0a87f98a/HG7I9pru4aYCDkgqv4294_ee1a2c7e601c488a89a572edebea56d9.png",
-
-  "ava_child__home__chest__severe":
-    "https://v3b.fal.media/files/b/0a87f98a/HG7I9pru4aYCDkgqv4294_ee1a2c7e601c488a89a572edebea56d9.png",
+  "ava_child__home__head__severe": "/support/ava_home_sympathy.png",
+  "ava_child__home__stomach__severe": "/support/ava_home_sympathy.png",
+  "ava_child__home__chest__severe": "/support/ava_home_sympathy.png",
 
   // ======================
   // AVA — OUTSIDE (SEVERE)
   // ======================
-  "ava_child__outside__head__severe":
-    "https://v3b.fal.media/files/b/0a87f995/Q03dTmhY4mo_oBZj3QZfI_2d430f9f5e404da19e67a4c6e2f060d2.png",
+  "ava_child__outside__head__severe": "/support/ava_outside_sympathy.png",
+  "ava_child__outside__stomach__severe": "/support/ava_outside_sympathy.png",
+  "ava_child__outside__chest__severe": "/support/ava_outside_sympathy.png",
 
-  "ava_child__outside__stomach__severe":
-    "https://v3b.fal.media/files/b/0a87f995/Q03dTmhY4mo_oBZj3QZfI_2d430f9f5e404da19e67a4c6e2f060d2.png",
+  // ======================
+  // LEO — SCHOOL (SEVERE)
+  // ======================
+  "leo_child__school__head__severe": "/support/leo_school_sympathy.png",
+  "leo_child__school__stomach__severe": "/support/leo_school_sympathy.png",
+  "leo_child__school__chest__severe": "/support/leo_school_sympathy.png",
 
-  "ava_child__outside__chest__severe":
-    "https://v3b.fal.media/files/b/0a87f995/Q03dTmhY4mo_oBZj3QZfI_2d430f9f5e404da19e67a4c6e2f060d2.png",
+  // ======================
+  // LEO — HOME (SEVERE)
+  // ======================
+  "leo_child__home__head__severe": "/support/leo_home_sympathy.png",
+  "leo_child__home__stomach__severe": "/support/leo_home_sympathy.png",
+  "leo_child__home__chest__severe": "/support/leo_home_sympathy.png",
 
+  // ======================
+  // LEO — OUTSIDE (SEVERE)
+  // ======================
+  "leo_child__outside__head__severe": "/support/leo_outside_sympathy.png",
+  "leo_child__outside__stomach__severe": "/support/leo_outside_sympathy.png",
+  "leo_child__outside__chest__severe": "/support/leo_outside_sympathy.png",
+};
 
-// ======================
-// LEO — SCHOOL (SEVERE)
-// Same image for all symptoms (head / stomach / chest)
-// ======================
-"leo_child__school__head__severe":
-  "https://v3b.fal.media/files/b/0a87f9ae/4YHBVXOBDaJ40qWN4mlHh_300bfd38f840414fad5ddac7ceb44bec.png",
-
-"leo_child__school__stomach__severe":
-  "https://v3b.fal.media/files/b/0a87f9ae/4YHBVXOBDaJ40qWN4mlHh_300bfd38f840414fad5ddac7ceb44bec.png",
-
-"leo_child__school__chest__severe":
-  "https://v3b.fal.media/files/b/0a87f9ae/4YHBVXOBDaJ40qWN4mlHh_300bfd38f840414fad5ddac7ceb44bec.png",
-
-// ======================
-// LEO — HOME (SEVERE)
-// ======================
-"leo_child__home__head__severe":
-  "https://v3b.fal.media/files/b/0a87f9b7/wjAkI6YesOcHvH7MFMxzD_4843b4f0297c4dda9ca7bf66fe2119a9.png",
-
-"leo_child__home__stomach__severe":
-  "https://v3b.fal.media/files/b/0a87f9b7/wjAkI6YesOcHvH7MFMxzD_4843b4f0297c4dda9ca7bf66fe2119a9.png",
-
-"leo_child__home__chest__severe":
-  "https://v3b.fal.media/files/b/0a87f9b7/wjAkI6YesOcHvH7MFMxzD_4843b4f0297c4dda9ca7bf66fe2119a9.png",
-
-// ======================
-// LEO — OUTSIDE (SEVERE)
-// ======================
-"leo_child__outside__head__severe":
-  "https://v3b.fal.media/files/b/0a87f9cd/WIKH2qqzN_2TNcUbdAJ--_c820c2ef227f4a669d3f2dc7479cb038.png",
-
-"leo_child__outside__stomach__severe":
-  "https://v3b.fal.media/files/b/0a87f9cd/WIKH2qqzN_2TNcUbdAJ--_c820c2ef227f4a669d3f2dc7479cb038.png",
-
-"leo_child__outside__chest__severe":
-  "https://v3b.fal.media/files/b/0a87f9cd/WIKH2qqzN_2TNcUbdAJ--_c820c2ef227f4a669d3f2dc7479cb038.png",
-
-}
 // ///////////////////////leo///////////////
 // {
 //     "ok": true,

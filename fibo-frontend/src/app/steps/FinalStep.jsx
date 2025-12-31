@@ -123,7 +123,7 @@ export default function FinalStep({
               }}
             >
               <div>
-                <div className="final-title">All done 💌</div>
+                <div className="final-title">Episodes</div>
                 <div className="final-subtitle">Analytics</div>
               </div>
 
@@ -136,7 +136,7 @@ export default function FinalStep({
             </div>
           ) : (
             <div>
-              <div className="final-title">All done 💌</div>
+              <div className="final-title">Child-Parent</div>
               <div className="final-subtitle">Last 10 episodes</div>
             </div>
           )}

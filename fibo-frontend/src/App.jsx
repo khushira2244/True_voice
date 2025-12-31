@@ -34,7 +34,7 @@ function safeReadSupportStore() {
   }
 }
 
-const avaSympathyImg = "/ava_symphathy.png";
+const avaSympathyImg = "/support/ava_symphathy.png";
 
 function App() {
   const [backendOk, setBackendOk] = useState(false);
@@ -109,7 +109,7 @@ function App() {
       case "severity":
         return "Is it severe or not severe?";
       case "final":
-        return "All done 💌";
+        return "Episodes";
       default:
         return "";
     }
